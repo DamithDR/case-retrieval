@@ -29,7 +29,6 @@ class IL_PCR(DataClass):
         candidates = self.candidates['text']
         candidates = [' \n'.join(candidate) for candidate in candidates]
         embedding_model = AutoModel.from_pretrained(model_name, trust_remote_code=True)
-        embedding_model = DataParallel(embedding_model)
         # for module_key, module in embedding_model._modules.items():
         #     embedding_model._modules[module_key] = DataParallel(module)  # use multiple gpus
         candidate_embeddings = embedding_model.encode(candidates, instruction="", max_length=self.max_length)
