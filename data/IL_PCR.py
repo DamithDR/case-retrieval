@@ -6,6 +6,7 @@ from transformers import AutoModel
 
 from data.DataClass import DataClass
 from datasets import load_dataset
+import torch
 
 
 class IL_PCR(DataClass):
@@ -28,13 +29,24 @@ class IL_PCR(DataClass):
         self.load_candidates(self.dataset)
         candidates = self.candidates['text']
         candidates = [' \n'.join(candidate) for candidate in candidates]
-        candidates = candidates[:10] #todo remove after testing
+        candidates = candidates[:100] #todo remove after testing
         embedding_model = AutoModel.from_pretrained(model_name, trust_remote_code=True)
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        embedding_model.to(device)
+
+        # Optional: Use DataParallel if multiple GPUs are available
+        if torch.cuda.device_count() > 1:
+            embedding_model = torch.nn.DataParallel(embedding_model)
+
         # for module_key, module in embedding_model._modules.items():
         #     embedding_model._modules[module_key] = DataParallel(module)  # use multiple gpus
         # candidate_embeddings = embedding_model.encode(candidates, instruction="", max_length=self.max_length)
-        candidate_embeddings=embedding_model._do_encode(candidates, batch_size=5, instruction="", max_length=self.max_length,
+        candidate_embeddings=embedding_model._do_encode(candidates, batch_size=8, instruction="", max_length=self.max_length,
                          num_workers=32, return_numpy=True)
+
+
+
+
         embeddings_df = pd.DataFrame(candidate_embeddings)
         model_alias = model_name.split('/')[-1] if model_name.__contains__('/') else model_name
         dataset_alias = self.dataset.split('/')[-1] if self.dataset.__contains__('/') else self.dataset
