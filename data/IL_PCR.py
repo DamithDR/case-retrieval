@@ -26,7 +26,7 @@ class IL_PCR(DataClass):
 
     def vectorise_candidates(self, model_name=None):
         self.load_candidates(self.dataset)
-        candidates = self.candidates['text']
+        candidates = self.candidates['text'].to_list()
         embedding_model = AutoModel.from_pretrained(model_name, trust_remote_code=True)
         for module_key, module in embedding_model._modules.items():
             embedding_model._modules[module_key] = DataParallel(module) #use multiple gpus
