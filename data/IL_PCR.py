@@ -28,6 +28,7 @@ class IL_PCR(DataClass):
         self.load_candidates(self.dataset)
         candidates = self.candidates['text']
         candidates = [' \n'.join(candidate) for candidate in candidates]
+        candidates = candidates[:100] #todo remove after testing
         embedding_model = AutoModel.from_pretrained(model_name, trust_remote_code=True)
         # for module_key, module in embedding_model._modules.items():
         #     embedding_model._modules[module_key] = DataParallel(module)  # use multiple gpus
