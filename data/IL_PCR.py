@@ -37,7 +37,7 @@ class IL_PCR(DataClass):
             print(f'visible devices {num_devices}')
         pipe = pipeline("feature-extraction", framework="pt", model=model_name,device_map="auto",trust_remote_code=True,tokenizer=tokeniser)
 
-        features = pipe(candidates, return_tensors="pt", batch_size=4)
+        features = pipe(candidates, return_tensors="pt", batch_size=1)
         print(features)
 
         # candidate_embeddings = embedding_model.encode(candidates, instruction="", max_length=self.max_length)
