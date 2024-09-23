@@ -22,7 +22,8 @@ passages = [
 dataset = load_dataset('Exploration-Lab/IL-TUR', "pcr", split='test_candidates')
 
 cases = dataset['text']
-passages = [' \n'.join(passage) for case in cases for passage in case]
+# passages = [' \n'.join(passage) for case in cases for passage in case]
+passages = [case[0] for case in cases]
 passages = passages[:1]
 
 # load model with tokenizer
