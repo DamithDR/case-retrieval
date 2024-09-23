@@ -32,8 +32,8 @@ class IL_PCR(DataClass):
         embedding_model = AutoModel.from_pretrained(model_name, trust_remote_code=True)
         # for module_key, module in embedding_model._modules.items():
         #     embedding_model._modules[module_key] = DataParallel(module)  # use multiple gpus
-        candidate_embeddings = embedding_model.encode(candidates, instruction="", max_length=self.max_length)
-        candidate_embeddings=embedding_model._do_encode(candidates, batch_size=1, instruction="", max_length=self.max_length,
+        # candidate_embeddings = embedding_model.encode(candidates, instruction="", max_length=self.max_length)
+        candidate_embeddings=embedding_model._do_encode(candidates, batch_size=5, instruction="", max_length=self.max_length,
                          num_workers=32, return_numpy=True)
         embeddings_df = pd.DataFrame(candidate_embeddings)
         model_alias = model_name.split('/')[-1] if model_name.__contains__('/') else model_name
