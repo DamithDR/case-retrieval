@@ -2,7 +2,7 @@ import os.path
 
 import pandas as pd
 from torch.nn import DataParallel
-from transformers import AutoModel
+from transformers import AutoModel, pipeline
 
 from data.DataClass import DataClass
 from datasets import load_dataset
@@ -30,26 +30,19 @@ class IL_PCR(DataClass):
         candidates = self.candidates['text']
         candidates = [' \n'.join(candidate) for candidate in candidates]
         candidates = candidates[:100] #todo remove after testing
-        embedding_model = AutoModel.from_pretrained(model_name, trust_remote_code=True)
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        embedding_model.to(device)
 
-        # Optional: Use DataParallel if multiple GPUs are available
-        if torch.cuda.device_count() > 1:
-            embedding_model = torch.nn.DataParallel(embedding_model)
+        pipe = pipeline("feature-extraction", framework="pt", model=model_name,device_map="auto",trust_remote_code=True)
 
-        # for module_key, module in embedding_model._modules.items():
-        #     embedding_model._modules[module_key] = DataParallel(module)  # use multiple gpus
+        features = pipe(candidates, return_tensors="pt", batch_size=4)
+        print(features)
+
         # candidate_embeddings = embedding_model.encode(candidates, instruction="", max_length=self.max_length)
-        candidate_embeddings=embedding_model._do_encode(candidates, batch_size=2, instruction="", max_length=self.max_length,
-                         num_workers=32, return_numpy=True)
 
 
 
-
-        embeddings_df = pd.DataFrame(candidate_embeddings)
-        model_alias = model_name.split('/')[-1] if model_name.__contains__('/') else model_name
-        dataset_alias = self.dataset.split('/')[-1] if self.dataset.__contains__('/') else self.dataset
-        save_path = f'embeddings/{model_alias}/{dataset_alias}.csv'
-        os.makedirs(save_path)
-        embeddings_df.to_csv(save_path, index=False)
+        # embeddings_df = pd.DataFrame(candidate_embeddings)
+        # model_alias = model_name.split('/')[-1] if model_name.__contains__('/') else model_name
+        # dataset_alias = self.dataset.split('/')[-1] if self.dataset.__contains__('/') else self.dataset
+        # save_path = f'embeddings/{model_alias}/{dataset_alias}.csv'
+        # os.makedirs(save_path)
+        # embeddings_df.to_csv(save_path, index=False)
