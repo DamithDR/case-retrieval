@@ -23,7 +23,7 @@ dataset = load_dataset('Exploration-Lab/IL-TUR', "pcr", split='test_candidates')
 
 passages = dataset['text']
 passages = [passage[0] for passage in passages]
-passages = passages[:100]
+passages = passages[:1]
 
 # load model with tokenizer
 model = AutoModel.from_pretrained('nvidia/NV-Embed-v2', trust_remote_code=True)
