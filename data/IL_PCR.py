@@ -28,7 +28,8 @@ class IL_PCR(DataClass):
     def vectorise_candidates(self, model_name=None):
         self.load_candidates(self.dataset)
         candidates = self.candidates['text']
-        candidates = [' \n'.join(candidate) for candidate in candidates]
+        # candidates = [' \n'.join(candidate) for candidate in candidates]
+        candidates = [candidate[0] for candidate in candidates] #todo change after testing
         candidates = candidates[:100] #todo remove after testing
         tokeniser = AutoTokenizer.from_pretrained(model_name)
 
