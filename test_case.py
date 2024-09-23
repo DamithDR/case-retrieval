@@ -27,7 +27,8 @@ passages = passages[:1]
 
 # load model with tokenizer
 model = AutoModel.from_pretrained('nvidia/NV-Embed-v2', trust_remote_code=True)
-
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = model.to(device)
 # get the embeddings
 max_length = 32768
 query_embeddings = model.encode(queries, instruction=query_prefix, max_length=max_length)
