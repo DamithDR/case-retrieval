@@ -41,7 +41,7 @@ class IL_PCR(DataClass):
         # for module_key, module in embedding_model._modules.items():
         #     embedding_model._modules[module_key] = DataParallel(module)  # use multiple gpus
         # candidate_embeddings = embedding_model.encode(candidates, instruction="", max_length=self.max_length)
-        candidate_embeddings=embedding_model._do_encode(candidates, batch_size=8, instruction="", max_length=self.max_length,
+        candidate_embeddings=embedding_model._do_encode(candidates, batch_size=2, instruction="", max_length=self.max_length,
                          num_workers=32, return_numpy=True)
 
 
