@@ -26,10 +26,11 @@ class IL_PCR(DataClass):
 
     def vectorise_candidates(self, model_name=None):
         self.load_candidates(self.dataset)
-        candidates = self.candidates['text'].to_list()
+        candidates = self.candidates['text']
+        candidates = [' \n'.join(candidate) for candidate in candidates]
         embedding_model = AutoModel.from_pretrained(model_name, trust_remote_code=True)
         for module_key, module in embedding_model._modules.items():
-            embedding_model._modules[module_key] = DataParallel(module) #use multiple gpus
+            embedding_model._modules[module_key] = DataParallel(module)  # use multiple gpus
         candidate_embeddings = embedding_model.encode(candidates, instruction="", max_length=self.max_length)
         embeddings_df = pd.DataFrame(candidate_embeddings)
         model_alias = model_name.split('/')[-1] if model_name.__contains__('/') else model_name
