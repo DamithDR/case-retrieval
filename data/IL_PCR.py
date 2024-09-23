@@ -29,7 +29,7 @@ class IL_PCR(DataClass):
         self.load_candidates(self.dataset)
         candidates = self.candidates['text']
         # candidates = [' \n'.join(candidate) for candidate in candidates]
-        candidates = [candidate[0] for candidate in candidates] #todo change after testing
+        candidates = [candidate[1] for candidate in candidates] #todo change after testing
         candidates = candidates[:100] #todo remove after testing
         tokeniser = AutoTokenizer.from_pretrained(model_name)
 
