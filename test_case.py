@@ -1,6 +1,7 @@
 import torch
 import torch.nn.functional as F
 from datasets import load_dataset
+from torch.nn import DataParallel
 from transformers import AutoTokenizer, AutoModel
 
 # Each query needs to be accompanied by an corresponding instruction describing the task.
@@ -28,8 +29,10 @@ passages = passages[:1]
 
 # load model with tokenizer
 model = AutoModel.from_pretrained('nvidia/NV-Embed-v2', trust_remote_code=True)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = model.to(device)
+for module_key, module in model._modules.items():
+    model._modules[module_key] = DataParallel(module)
+# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# model = model.to(device)
 # get the embeddings
 max_length = 32768
 query_embeddings = model.encode(queries, instruction=query_prefix, max_length=max_length)
