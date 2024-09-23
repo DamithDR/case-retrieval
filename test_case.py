@@ -1,5 +1,6 @@
 import torch
 import torch.nn.functional as F
+from datasets import load_dataset
 from transformers import AutoTokenizer, AutoModel
 
 # Each query needs to be accompanied by an corresponding instruction describing the task.
@@ -17,6 +18,11 @@ passages = [
     "Since you're reading this, you are probably someone from a judo background or someone who is just wondering how judo techniques can be applied under wrestling rules. So without further ado, let's get to the question. Are Judo throws allowed in wrestling? Yes, judo throws are allowed in freestyle and folkstyle wrestling. You only need to be careful to follow the slam rules when executing judo throws. In wrestling, a slam is lifting and returning an opponent to the mat with unnecessary force.",
     "Below are the basic steps to becoming a radiologic technologist in Michigan:Earn a high school diploma. As with most careers in health care, a high school education is the first step to finding entry-level employment. Taking classes in math and science, such as anatomy, biology, chemistry, physiology, and physics, can help prepare students for their college studies and future careers.Earn an associate degree. Entry-level radiologic positions typically require at least an Associate of Applied Science. Before enrolling in one of these degree programs, students should make sure it has been properly accredited by the Joint Review Committee on Education in Radiologic Technology (JRCERT).Get licensed or certified in the state of Michigan."
 ]
+
+dataset = load_dataset('Exploration-Lab/IL-TUR', "pcr", split='test_candidates')
+
+passages = dataset['text'].to_list()[:100]
+passages = [passage[0] for passage in passages]
 
 # load model with tokenizer
 model = AutoModel.from_pretrained('nvidia/NV-Embed-v2', trust_remote_code=True)
