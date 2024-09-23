@@ -2,3 +2,4 @@ pandas
 transformers==4.42.4
 datasets
 einops
+accelerate

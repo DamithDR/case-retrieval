@@ -2,7 +2,7 @@ import os.path
 
 import pandas as pd
 from torch.nn import DataParallel
-from transformers import AutoModel, pipeline
+from transformers import AutoModel, pipeline, AutoTokenizer
 
 from data.DataClass import DataClass
 from datasets import load_dataset
@@ -30,8 +30,8 @@ class IL_PCR(DataClass):
         candidates = self.candidates['text']
         candidates = [' \n'.join(candidate) for candidate in candidates]
         candidates = candidates[:100] #todo remove after testing
-
-        pipe = pipeline("feature-extraction", framework="pt", model=model_name,device_map="auto",trust_remote_code=True)
+        tokeniser = AutoTokenizer.from_pretrained(model_name)
+        pipe = pipeline("feature-extraction", framework="pt", model=model_name,device_map="auto",trust_remote_code=True,tokenizer=tokeniser)
 
         features = pipe(candidates, return_tensors="pt", batch_size=4)
         print(features)
