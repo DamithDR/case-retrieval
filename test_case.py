@@ -43,11 +43,12 @@ def run(args):
     if torch.cuda.is_available():
         print('cuda is available shifting data to cuda')
     # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        model = model.to("cuda")
+        for module_key, module in model._modules.items():
+            model._modules[module_key] = DataParallel(module)
+        # model = model.to("cuda")
         tokenised_data = tokenised_data.to('cuda')
 
-    for module_key, module in model._modules.items():
-        model._modules[module_key] = DataParallel(module)
+
     # get the embeddings
     max_length = 32768
     query_embeddings = model.encode(queries, instruction=query_prefix, max_length=max_length)
