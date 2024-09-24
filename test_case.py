@@ -34,20 +34,19 @@ def run(args):
     passages = [passages[args.number]]
 
     tokeniser = AutoTokenizer.from_pretrained('nvidia/NV-Embed-v2')
-    tokenised_data = tokeniser(passages,padding=False, truncation=False, return_tensors="pt")
+    tokenised_data = tokeniser(passages, padding=False, truncation=False, return_tensors="pt")
     # tensor_data = torch.tensor(tokenised_data)
 
     # load model with tokenizer
-    model = AutoModel.from_pretrained('nvidia/NV-Embed-v2', trust_remote_code=True)
+    model = AutoModel.from_pretrained('nvidia/NV-Embed-v2', device_map='auto', trust_remote_code=True)
 
     if torch.cuda.is_available():
         print('cuda is available shifting data to cuda')
-    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         for module_key, module in model._modules.items():
             model._modules[module_key] = DataParallel(module)
         # model = model.to("cuda")
         tokenised_data = tokenised_data.to('cuda')
-
 
     # get the embeddings
     max_length = 32768
