@@ -34,7 +34,7 @@ def run(args):
     passages = [passages[args.number]]
 
     tokeniser = AutoTokenizer.from_pretrained('nvidia/NV-Embed-v2')
-    tokenised_data = tokeniser(passages)
+    tokenised_data = tokeniser(passages,padding=False, truncation=False, return_tensors="pt")
     tensor_data = torch.tensor(tokenised_data)
 
     # load model with tokenizer
