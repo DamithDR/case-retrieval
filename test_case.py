@@ -32,19 +32,22 @@ def run(args):
 
     print(f'length of sequence: {len(passages[args.number].split(" "))}')
     passages = [passages[args.number]]
+    tensor_data = torch.tensor(passages)
 
     # load model with tokenizer
     model = AutoModel.from_pretrained('nvidia/NV-Embed-v2', trust_remote_code=True)
 
+    if torch.cuda.is_available():
     # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    # model = model.to(device)
+        model = model.to("cuda")
+        tensor_data = tensor_data.to('cuda')
 
-    # for module_key, module in model._modules.items():
-    #     model._modules[module_key] = DataParallel(module)
+    for module_key, module in model._modules.items():
+        model._modules[module_key] = DataParallel(module)
     # get the embeddings
     max_length = 32768
     query_embeddings = model.encode(queries, instruction=query_prefix, max_length=max_length)
-    passage_embeddings = model.encode(passages, instruction=passage_prefix, max_length=max_length)
+    passage_embeddings = model.encode(tensor_data, instruction=passage_prefix, max_length=max_length)
 
     # normalize embeddings
     query_embeddings = F.normalize(query_embeddings, p=2, dim=1)
