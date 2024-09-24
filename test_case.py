@@ -48,14 +48,14 @@ def run(args):
     model = model.cuda()
     model = DDP(model, device_ids=[0,1,2])
 
-    if torch.cuda.is_available():
-        print('cuda is available shifting data to cuda')
-        model = model.to("cuda")
-        # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        for module_key, module in model._modules.items():
-            model._modules[module_key] = DataParallel(module)
+    # if torch.cuda.is_available():
+    #     print('cuda is available shifting data to cuda')
+    #     model = model.to("cuda")
+    #     # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    #     for module_key, module in model._modules.items():
+    #         model._modules[module_key] = DataParallel(module)
 
-        tokenised_data = tokenised_data.to('cuda')
+    tokenised_data = tokenised_data.to('cuda')
 
     # get the embeddings
     max_length = 32768
