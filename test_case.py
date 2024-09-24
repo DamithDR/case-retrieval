@@ -42,10 +42,11 @@ def run(args):
 
     if torch.cuda.is_available():
         print('cuda is available shifting data to cuda')
+        model = model.to("cuda")
         # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         for module_key, module in model._modules.items():
             model._modules[module_key] = DataParallel(module)
-        # model = model.to("cuda")
+
         tokenised_data = tokenised_data.to('cuda')
 
     # get the embeddings
