@@ -5,6 +5,9 @@ import torch.nn.functional as F
 from datasets import load_dataset
 from torch.nn import DataParallel
 from transformers import AutoTokenizer, AutoModel
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel as DDP
+
 
 
 def run(args):
@@ -33,12 +36,17 @@ def run(args):
     print(f'length of sequence: {len(passages[args.number].split(" "))}')
     passages = [passages[args.number]]
 
+
     tokeniser = AutoTokenizer.from_pretrained('nvidia/NV-Embed-v2')
     tokenised_data = tokeniser(passages, padding=False, truncation=False, return_tensors="pt")
     # tensor_data = torch.tensor(tokenised_data)
 
     # load model with tokenizer
+    # Initialize the process group for distributed training
+    dist.init_process_group(backend="nccl")
     model = AutoModel.from_pretrained('nvidia/NV-Embed-v2', device_map='auto', trust_remote_code=True)
+    model = model.cuda()
+    model = DDP(model, device_ids=[0,1,2])
 
     if torch.cuda.is_available():
         print('cuda is available shifting data to cuda')
