@@ -32,12 +32,16 @@ def run(args):
 
     print(f'length of sequence: {len(passages[args.number].split(" "))}')
     passages = [passages[args.number]]
-    tensor_data = torch.tensor(passages)
+
+    tokeniser = AutoTokenizer.from_pretrained('nvidia/NV-Embed-v2')
+    tokenised_data = tokeniser(passages)
+    tensor_data = torch.tensor(tokenised_data)
 
     # load model with tokenizer
     model = AutoModel.from_pretrained('nvidia/NV-Embed-v2', trust_remote_code=True)
 
     if torch.cuda.is_available():
+        print('cuda is available shifting data to cuda')
     # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model = model.to("cuda")
         tensor_data = tensor_data.to('cuda')
