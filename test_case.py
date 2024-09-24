@@ -24,15 +24,17 @@ dataset = load_dataset('Exploration-Lab/IL-TUR', "pcr", split='test_candidates')
 
 cases = dataset['text']
 # passages = [' \n'.join(passage) for case in cases for passage in case]
-passages = [case[0] for case in cases]
-passages = passages[:1]
+passages = [' \n'.join(case) for case in cases]
+passages = [passages[3]]
 
 # load model with tokenizer
 model = AutoModel.from_pretrained('nvidia/NV-Embed-v2', trust_remote_code=True)
-for module_key, module in model._modules.items():
-    model._modules[module_key] = DataParallel(module)
+
 # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # model = model.to(device)
+
+# for module_key, module in model._modules.items():
+#     model._modules[module_key] = DataParallel(module)
 # get the embeddings
 max_length = 32768
 query_embeddings = model.encode(queries, instruction=query_prefix, max_length=max_length)
