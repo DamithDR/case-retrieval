@@ -6,15 +6,16 @@ from datasets import load_dataset
 from torch.nn import DataParallel
 from transformers import AutoTokenizer, AutoModel
 
+
 def run(args):
     # Each query needs to be accompanied by an corresponding instruction describing the task.
-    task_name_to_instruct = {"example": "Given a question, retrieve passages that answer the question",}
+    task_name_to_instruct = {"example": "Given a question, retrieve passages that answer the question", }
 
-    query_prefix = "Instruct: "+task_name_to_instruct["example"]+"\nQuery: "
+    query_prefix = "Instruct: " + task_name_to_instruct["example"] + "\nQuery: "
     queries = [
         'are judo throws allowed in wrestling?',
         'how to become a radiology technician in michigan?'
-        ]
+    ]
 
     # No instruction needed for retrieval passages
     passage_prefix = ""
@@ -28,6 +29,8 @@ def run(args):
     cases = dataset['text']
     # passages = [' \n'.join(passage) for case in cases for passage in case]
     passages = [' \n'.join(case) for case in cases]
+
+    print(f'length of sequence: {len(passages[args.number].split(" "))}')
     passages = [passages[args.number]]
 
     # load model with tokenizer
@@ -55,6 +58,7 @@ def run(args):
     scores = (query_embeddings @ passage_embeddings.T) * 100
     print(scores.tolist())
     # [[87.42693328857422, 0.46283677220344543], [0.965264618396759, 86.03721618652344]]
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
