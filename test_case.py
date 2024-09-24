@@ -31,14 +31,14 @@ def run(args):
 
     cases = dataset['text']
     # passages = [' \n'.join(passage) for case in cases for passage in case]
-    passages = [' \n'.join(case) for case in cases]
-
-    print(f'length of sequence: {len(passages[args.number].split(" "))}')
-    passages = [passages[args.number]]
+    # passages = [' \n'.join(case) for case in cases]
+    #
+    # print(f'length of sequence: {len(passages[args.number].split(" "))}')
+    # passages = [passages[args.number]]
 
 
     tokeniser = AutoTokenizer.from_pretrained('nvidia/NV-Embed-v2')
-    tokenised_data = tokeniser(passages, padding=False, truncation=False, return_tensors="pt")
+    # tokenised_data = tokeniser(passages, padding=False, truncation=False, return_tensors="pt")
     # tensor_data = torch.tensor(tokenised_data)
 
     # load model with tokenizer
