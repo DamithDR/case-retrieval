@@ -7,7 +7,7 @@ class Nvembedv2:
         self.model = SentenceTransformer('nvidia/NV-Embed-v2', trust_remote_code=True)
         self.model.max_seq_length = 32768
         self.model.tokenizer.padding_side = "right"
-        self.batch_size = 2
+        self.batch_size = 1
 
     def add_eos(self, data):
         data = [input_example + self.model.tokenizer.eos_token for input_example in data]
