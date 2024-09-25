@@ -1,8 +1,10 @@
 import os.path
+import sys
 
 import pandas as pd
 from torch.nn import DataParallel
 from transformers import AutoModel, pipeline, AutoTokenizer
+from sentence_transformers import SentenceTransformer
 
 from data.DataClass import DataClass
 from datasets import load_dataset
@@ -32,8 +34,8 @@ class IL_PCR(DataClass):
     def vectorise_candidates(self, model_name=None):
         self.load_candidates(self.dataset)
         candidates = self.candidates['text']
+        ids = self.candidates['id']
         candidates = [' \n'.join(candidate) for candidate in candidates]
-
         # candidate_embeddings = embedding_model.encode(candidates, instruction="", max_length=self.max_length)
 
         self.model = SentenceTransformer(model_name, trust_remote_code=True)
@@ -46,7 +48,7 @@ class IL_PCR(DataClass):
                                                  batch_size=batch_size,
                                                  normalize_embeddings=True)
 
-        embeddings_df = pd.DataFrame(candidate_embeddings)
+        embeddings_df = pd.DataFrame({'ids': ids, 'embeddings': candidate_embeddings})
         model_alias = model_name.split('/')[-1] if model_name.__contains__('/') else model_name
         dataset_alias = self.dataset.split('/')[-1] if self.dataset.__contains__('/') else self.dataset
         save_path = f'embeddings/{model_alias}/{dataset_alias}.csv'
