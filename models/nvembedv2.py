@@ -30,9 +30,9 @@ class Nvembedv2:
 
     def vectorise(self, data):
         data = self.truncate_sequences(data)
-        embeddings = self.model.encode(self.add_eos(data), show_progress_bar=True,
-                                       batch_size=self.batch_size,
-                                       normalize_embeddings=True)
+        embeddings = self.model.module.encode(self.add_eos(data), show_progress_bar=True,
+                                              batch_size=self.batch_size,
+                                              normalize_embeddings=True)
         return embeddings
 
     def get_name(self):
