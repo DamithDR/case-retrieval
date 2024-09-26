@@ -55,7 +55,7 @@ def vectorise_queries(model_class, data_class):
 def run(args):
     print(args)
 
-    data_class = get_data_class(args.name)
+    data_class = get_data_class(args.dataset)
     model_class = get_model_class(args.model_name)
 
     vectorise_queries(model_class, data_class)
