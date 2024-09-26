@@ -6,8 +6,8 @@ from data.DataClass import DataClass
 class IL_PCR(DataClass):
 
     def __init__(self):
-        super().__init__()
         self.name = 'Exploration-Lab/IL-TUR'
+        super().__init__()
 
     def load_candidates(self):
         temp_data = load_dataset(self.name, "pcr", split='test_candidates')
