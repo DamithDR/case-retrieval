@@ -8,7 +8,7 @@ class Nvembedv2:
         self.name = 'nvidia/NV-Embed-v2'
         self.model = SentenceTransformer('nvidia/NV-Embed-v2', trust_remote_code=True)
         self.tokeniser = AutoTokenizer.from_pretrained('nvidia/NV-Embed-v2')
-        self.model.max_seq_length = 32768
+        self.model.max_seq_length = 16
         self.model.tokenizer.padding_side = "right"
         self.batch_size = 1
         self.max_seq_length = 16 - 1  # keep space for EOS token added in add_eos
