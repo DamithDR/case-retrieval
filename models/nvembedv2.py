@@ -11,7 +11,7 @@ class Nvembedv2:
         self.model.max_seq_length = 32768
         self.model.tokenizer.padding_side = "right"
         self.batch_size = 1
-        self.max_seq_length = 4096 - 1  # keep space for EOS token added in add_eos
+        self.max_seq_length = 2048 - 1  # keep space for EOS token added in add_eos
 
     def add_eos(self, data):
         data = [input_example + self.tokeniser.eos_token for input_example in data]
