@@ -30,19 +30,17 @@ def get_save_names(model_class, data_class):
 
 def save_embeddings(embeddings, ids, split_alias, model_alias, dataset_alias):
 
-    print(f'ids {len(ids)} | embeddings {len(embeddings)}')
-    print(embeddings)
-    # print(np.array2string(embeddings, separator=','))
     embeddings_df = pd.DataFrame(
         {'ids': ids, 'embeddings': [np.array2string(embedding, separator=',') for embedding in embeddings]})
 
-    save_path = f'embeddings/{model_alias}/{dataset_alias}_{split_alias}.csv'
+    save_path = f'embeddings/{model_alias}'
     os.makedirs(save_path)
-    embeddings_df.to_csv(save_path, index=False)
+
+    embeddings_df.to_csv(f'{save_path}/{dataset_alias}_{split_alias}.csv', index=False)
 
 
 def vectorise_candidates(model_class, data_class):
-    candidate_embeddings = model_class.vectorise(data_class.get_candidates()[:10]) #todo remove after testing
+    candidate_embeddings = model_class.vectorise(data_class.get_candidates()[:10])  # todo remove after testing
     ids = data_class.get_candidate_ids()[:10]
 
     model_alias, dataset_alias = get_save_names(model_class, data_class)
