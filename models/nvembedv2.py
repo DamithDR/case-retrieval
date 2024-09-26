@@ -16,7 +16,7 @@ class Nvembedv2:
     def vectorise(self, data):
         embeddings = self.model.encode(self.add_eos(data), show_progress_bar=True,
                                        batch_size=self.batch_size,
-                                       normalize_embeddings=True)
+                                       normalize_embeddings=True, truncate=True)
         return embeddings
 
     def get_name(self):
