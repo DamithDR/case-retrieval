@@ -1,5 +1,4 @@
 from sentence_transformers import SentenceTransformer
-from torch.nn import DataParallel
 from transformers import AutoTokenizer
 
 
@@ -28,7 +27,7 @@ class Nvembedv2:
         return truncated_sequences
 
     def vectorise(self, data):
-        data = self.truncate_sequences(data)
+        # data = self.truncate_sequences(data)
         embeddings = self.model.encode(self.add_eos(data), show_progress_bar=True,
                                        batch_size=self.batch_size,
                                        normalize_embeddings=True)

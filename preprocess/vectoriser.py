@@ -29,12 +29,11 @@ def get_save_names(model_class, data_class):
 
 
 def save_embeddings(embeddings, ids, split_alias, model_alias, dataset_alias):
-
     embeddings_df = pd.DataFrame(
         {'ids': ids, 'embeddings': [np.array2string(embedding, separator=',') for embedding in embeddings]})
 
     save_path = f'embeddings/{model_alias}'
-    os.makedirs(save_path)
+    if not os.path.exists(save_path): os.makedirs(save_path)
 
     embeddings_df.to_csv(f'{save_path}/{dataset_alias}_{split_alias}.csv', index=False)
 
