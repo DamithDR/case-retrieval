@@ -3,7 +3,6 @@ from abc import abstractmethod
 
 class DataClass:
     def __init__(self):
-        self.name = None
         self.queries = None
         self.query_ids = None
         self.candidates = None
