@@ -9,10 +9,10 @@ class Nvembedv2:
         self.name = 'Salesforce/SFR-Embedding-Mistral'
         self.model = SentenceTransformer('Salesforce/SFR-Embedding-Mistral', trust_remote_code=True)
         self.tokeniser = AutoTokenizer.from_pretrained('Salesforce/SFR-Embedding-Mistral')
-        self.model.max_seq_length = 16
+        self.model.model.max_seq_length = 1024
         self.model.tokenizer.padding_side = "right"
         self.batch_size = 1
-        self.max_seq_length = 16 - 1  # keep space for EOS token added in add_eos
+        self.max_seq_length = 1024 - 1  # keep space for EOS token added in add_eos
 
     def add_eos(self, data):
         data = [input_example + self.tokeniser.eos_token for input_example in data]
@@ -29,6 +29,7 @@ class Nvembedv2:
 
     def vectorise(self, data):
         data = self.truncate_sequences(data)
+        data = data[:10] #todo remove after testing
         embeddings = self.model.encode(self.add_eos(data), show_progress_bar=True,
                                        batch_size=self.batch_size,
                                        normalize_embeddings=True)
