@@ -16,7 +16,7 @@ class Nvembedv2:
         self.setup()
 
     def add_eos(self, data):
-        data = [input_example + self.model.tokenizer.eos_token for input_example in data]
+        data = [input_example + self.tokeniser.eos_token for input_example in data]
         return data
 
     def truncate_sequences(self, data):
