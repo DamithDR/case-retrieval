@@ -1,4 +1,5 @@
 from sentence_transformers import SentenceTransformer
+from torch.nn import DataParallel
 from transformers import AutoTokenizer
 
 
@@ -11,6 +12,8 @@ class Nvembedv2:
         self.model.tokenizer.padding_side = "right"
         self.batch_size = 2
         self.max_seq_length = 8192 - 1  # keep space for EOS token added in add_eos
+
+        self.setup()
 
     def add_eos(self, data):
         data = [input_example + self.model.tokenizer.eos_token for input_example in data]
@@ -34,3 +37,7 @@ class Nvembedv2:
 
     def get_name(self):
         return self.name
+
+    def setup(self):
+        for module_key, module in self.model._modules.items():
+            self.model._modules[module_key] = DataParallel(module)

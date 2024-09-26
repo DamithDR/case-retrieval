@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p gpu-short
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:2
 #SBATCH --mem=60G
 #SBATCH --time=04:00:00
 #SBATCH --cpus-per-task=4
