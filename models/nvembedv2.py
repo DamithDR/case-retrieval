@@ -29,7 +29,6 @@ class Nvembedv2:
 
     def vectorise(self, data):
         data = self.truncate_sequences(data)
-        data = data[:10] #todo remove after testing
         embeddings = self.model.encode(self.add_eos(data), show_progress_bar=True,
                                        batch_size=self.batch_size,
                                        normalize_embeddings=True)
