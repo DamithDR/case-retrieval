@@ -29,6 +29,8 @@ def get_save_names(model_class, data_class):
 
 
 def save_embeddings(embeddings, ids, split_alias, model_alias, dataset_alias):
+    print(embeddings)
+    # print(np.array2string(embeddings, separator=','))
     embeddings_df = pd.DataFrame(
         {'ids': ids, 'embeddings': [np.array2string(embedding, separator=',') for embedding in embeddings]})
 
