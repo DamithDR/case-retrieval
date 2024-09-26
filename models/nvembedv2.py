@@ -11,7 +11,7 @@ class Nvembedv2:
         self.tokeniser = AutoTokenizer.from_pretrained('Salesforce/SFR-Embedding-Mistral')
         self.model.max_seq_length = 1024
         self.model.tokenizer.padding_side = "right"
-        self.batch_size = 1
+        self.batch_size = 2
         self.max_seq_length = 1024 - 1  # keep space for EOS token added in add_eos
 
     def add_eos(self, data):
