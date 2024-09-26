@@ -5,9 +5,10 @@ from transformers import AutoTokenizer
 
 class Nvembedv2:
     def __init__(self):
-        self.name = 'nvidia/NV-Embed-v2'
-        self.model = SentenceTransformer('nvidia/NV-Embed-v2', trust_remote_code=True)
-        self.tokeniser = AutoTokenizer.from_pretrained('nvidia/NV-Embed-v2')
+        # self.name = 'nvidia/NV-Embed-v2'
+        self.name = 'Salesforce/SFR-Embedding-Mistral'
+        self.model = SentenceTransformer('Salesforce/SFR-Embedding-Mistral', trust_remote_code=True)
+        self.tokeniser = AutoTokenizer.from_pretrained('Salesforce/SFR-Embedding-Mistral')
         self.model.max_seq_length = 16
         self.model.tokenizer.padding_side = "right"
         self.batch_size = 1
