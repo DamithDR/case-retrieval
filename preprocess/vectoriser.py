@@ -57,6 +57,7 @@ def save_embeddings(embeddings, ids, split_alias, model_alias, dataset_alias):
     if not os.path.exists(save_path): os.makedirs(save_path)
 
     embeddings_df.to_csv(f'{save_path}/{dataset_alias}_{split_alias}.csv', index=False)
+    print(f'saveing complete : {save_path}/{dataset_alias}_{split_alias}.csv')
 
 
 def vectorise_candidates(model_class, data_class):
@@ -72,6 +73,7 @@ def vectorise_queries(model_class, data_class):
     ids = data_class.get_query_ids()[:10]
 
     model_alias, dataset_alias = get_save_names(model_class, data_class)
+    print("vectorise complete")
     save_embeddings(query_embeddings, ids, 'queries', model_alias, dataset_alias)
 
 
