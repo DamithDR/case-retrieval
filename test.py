@@ -2,12 +2,19 @@ import json
 
 import pandas as pd
 
-with open('data/files/muser/muser_cases_pool.json', 'r', encoding='utf-8') as file:
-    data = json.load(file)
 
-# concat the facts findings and court opinion
-rows = [{'id': key, 'text': '\n'.join(value['content']['本院查明']) + '\n'.join(value['content']['本院认为'])} for
-        key, value in data.items()]
-df = pd.DataFrame(rows)
 
-print(df)
+file_name = 'data/files/irled/candidates/prior_case_0001.txt'
+with open(file_name, 'r', encoding='utf-8') as file:
+    text = file.read()
+    print(text)
+# for filename in os.listdir(path):
+#     if filename.endswith('.txt'):
+#         file_path = os.path.join(path, filename)
+#         with open(file_path, 'r', encoding='utf-8') as file:
+#             text = file.read()
+#         ids.append(os.path.splitext(filename)[0])
+#         data.append(text)
+# return ids, text
+
+
