@@ -89,10 +89,11 @@ def vectorise_dataset(model_class, data_class):
 
 
 def vectorise(model_class, data_class):
+    print('came to vectorise')
     if data_class.get_name() in ['irled', 'ilpcr']:
         vectorise_queries(model_class, data_class)
         vectorise_candidates(model_class, data_class)
-    elif data_class.get_name in ['muser', 'coliee', 'ecthr']:
+    elif data_class.get_name() in ['muser', 'coliee', 'ecthr']:
         vectorise_dataset(model_class, data_class)
 
 
