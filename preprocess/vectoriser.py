@@ -59,24 +59,24 @@ def save_embeddings(embeddings, ids, split_alias, model_alias, dataset_alias):
 
 
 def vectorise_candidates(model_class, data_class):
-    candidate_embeddings = model_class.vectorise(data_class.get_candidates())
-    ids = data_class.get_candidate_ids()
+    candidate_embeddings = model_class.vectorise(data_class.get_candidates()[:10]) #todo remove after testing
+    ids = data_class.get_candidate_ids()[:10]
 
     model_alias, dataset_alias = get_save_names(model_class, data_class)
     save_embeddings(candidate_embeddings, ids, 'candidates', model_alias, dataset_alias)
 
 
 def vectorise_queries(model_class, data_class):
-    query_embeddings = model_class.vectorise(data_class.get_queries())
-    ids = data_class.get_query_ids()
+    query_embeddings = model_class.vectorise(data_class.get_queries()[:10])
+    ids = data_class.get_query_ids()[:10]
 
     model_alias, dataset_alias = get_save_names(model_class, data_class)
     save_embeddings(query_embeddings, ids, 'queries', model_alias, dataset_alias)
 
 
 def vectorise_dataset(model_class, data_class):
-    embeddings = model_class.vectorise(data_class.get_data())
-    ids = data_class.get_ids()
+    embeddings = model_class.vectorise(data_class.get_data()[:10])
+    ids = data_class.get_ids()[:10]
 
     model_alias, dataset_alias = get_save_names(model_class, data_class)
     save_embeddings(embeddings, ids, 'data', model_alias, dataset_alias)
@@ -92,7 +92,7 @@ def vectorise(model_class, data_class):
 
 
 def run(args):
-    print(args)
+    print(f'running args : model - {args.model_name} | data - {args.dataset}')
 
     data_class = get_data_class(args.dataset)
     model_class = get_model_class(args.model_name)
