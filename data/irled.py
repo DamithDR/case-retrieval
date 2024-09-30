@@ -19,10 +19,12 @@ class irled(DataClass):
     def load_candidates(self):
         path = os.path.join(self.name, 'candidates')
         self.candidate_ids, self.candidates = self.load_files(path)
+        print(f'candidates : {len(self.candidates)} | {len(self.candidate_ids)}')
 
     def load_queries(self):
         path = os.path.join(self.name, 'queries')
         self.query_ids, self.queries = self.load_files(path)
+        print(f'queries : {len(self.queries)} | {len(self.query_ids)}')
 
     def load_files(self, path):
         ids = []
@@ -34,7 +36,6 @@ class irled(DataClass):
                     text = file.read()
                 ids.append(os.path.splitext(filename)[0])
                 data.append(text)
-                print(text)
         return ids, text
 
     def get_candidates(self):
