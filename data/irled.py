@@ -29,7 +29,7 @@ class irled(DataClass):
         data = []
         for filename in os.listdir(path):
             if filename.endswith('.txt'):
-                file_path = os.path.join(self.name, filename)
+                file_path = os.path.join(path, filename)
                 with open(file_path, 'r', encoding='utf-8') as file:
                     text = file.read()
                 ids.append(os.path.splitext(filename)[0])
