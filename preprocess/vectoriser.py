@@ -85,7 +85,6 @@ def vectorise_dataset(model_class, data_class):
 
 
 def vectorise(model_class, data_class, dataset):
-    print('came to vectorise')
     if dataset in ['irled', 'ilpcr']:
         vectorise_queries(model_class, data_class)
         vectorise_candidates(model_class, data_class)

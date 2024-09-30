@@ -36,4 +36,14 @@ class irled(DataClass):
                 data.append(text)
         return ids, text
 
+    def get_candidates(self):
+        return self.candidates
 
+    def get_candidate_ids(self):
+        return self.candidate_ids
+
+    def get_queries(self):
+        return self.queries
+
+    def get_query_ids(self):
+        return self.query_ids
