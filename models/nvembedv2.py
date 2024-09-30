@@ -7,7 +7,7 @@ class Nvembedv2(AbsEmbed):
         super().__init__('nvidia/NV-Embed-v2')
         self.model = SentenceTransformer(self.name, trust_remote_code=True)
 
-        self.model.max_seq_length = 1024
+        self.model.max_seq_length = 3072
         self.model.tokenizer.padding_side = "right"
         self.batch_size = 2
 

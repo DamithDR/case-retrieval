@@ -8,9 +8,9 @@ class stella(AbsEmbed):
         super().__init__('dunzhang/stella_en_1.5B_v5')
         self.model = SentenceTransformer(self.name, trust_remote_code=True).cuda()
 
-        self.model.max_seq_length = 1024
+        self.model.max_seq_length = 3072
         self.model.tokenizer.padding_side = "right"
-        self.batch_size = 2
+        self.batch_size = 16
 
     def vectorise(self, data):
         embeddings = self.model.encode(data, show_progress_bar=True,

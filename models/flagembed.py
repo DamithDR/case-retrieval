@@ -9,7 +9,7 @@ class flag(AbsEmbed):
         super().__init__('BAAI/bge-en-icl')
         self.model = FlagICLModel(self.name, query_instruction_for_retrieval="", normalize_embeddings=True)
 
-        self.max_seq_length = 1024
+        self.max_seq_length = 3072
         self.model.tokenizer.padding_side = "right"
         self.batch_size = 2
 

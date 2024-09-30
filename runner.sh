@@ -1,0 +1,1 @@
+python -m preprocess.vectoriser --model_name dunzhang/stella_en_1.5B_v5 --dataset IL_PCR
