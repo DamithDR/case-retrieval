@@ -14,7 +14,9 @@ class ecthr(DataClass):
         temp_data = load_dataset(self.name, split='train')
 
         self.ids = temp_data['appno']
-        self.data = (temp_data['facts'] + ' ' + temp_data['law']).tolist()  # using only the facts of the echr cases
+        self.data = []
+        for facts, laws in zip(temp_data['facts'], temp_data['law']):
+            self.data.append(" ".join(facts) + " " + " ".join(laws))
 
     def get_ids(self):
         return self.ids

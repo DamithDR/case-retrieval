@@ -7,6 +7,7 @@ import pandas as pd
 from data.coliee import coliee
 from data.ecthr import ecthr
 from data.ilpcr import ilpcr
+from data.irled import irled
 from data.muser import muser
 from models.flagembed import flag
 from models.nvembedv2 import Nvembedv2
@@ -15,12 +16,12 @@ from models.stellaembed import stella
 
 
 def get_data_class(dataset):
-    if dataset == 'IL_PCR':
+    if dataset == 'ilpcr':
         return ilpcr()
     elif dataset == 'coliee':
         return coliee()
-    elif dataset == 'ilpcr':
-        return ilpcr()
+    elif dataset == 'irled':
+        return irled()
     elif dataset == 'muser':
         return muser()
     elif dataset == 'ecthr':
@@ -59,7 +60,7 @@ def save_embeddings(embeddings, ids, split_alias, model_alias, dataset_alias):
 
 
 def vectorise_candidates(model_class, data_class):
-    candidate_embeddings = model_class.vectorise(data_class.get_candidates()[:10]) # todo remove after testing
+    candidate_embeddings = model_class.vectorise(data_class.get_candidates()[:10])  # todo remove after testing
     ids = data_class.get_candidate_ids()[:10]
 
     model_alias, dataset_alias = get_save_names(model_class, data_class)
@@ -83,11 +84,10 @@ def vectorise_dataset(model_class, data_class):
 
 
 def vectorise(model_class, data_class):
-    if data_class.get_name() in ['data/files/irled', 'Exploration-Lab/IL-TUR']:
+    if data_class.get_name() in ['irled', 'ilpcr']:
         vectorise_queries(model_class, data_class)
         vectorise_candidates(model_class, data_class)
-    elif data_class.get_name in ['data/files/muser/muser_cases_pool.json', 'data/files/coliee',
-                                 'RashidHaddad/ECTHR-PCR']:
+    elif data_class.get_name in ['muser', 'coliee', 'ecthr']:
         vectorise_dataset(model_class, data_class)
 
 
