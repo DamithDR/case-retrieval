@@ -1,3 +1,5 @@
 python -m experiments.retrieve --model_name nvidia/NV-Embed-v2 --dataset IL_PCR
 
-python -m preprocess.vectorise --model_name nvidia/NV-Embed-v2 --dataset IL_PCR
+python -m preprocess.vectoriser --model_name nvidia/NV-Embed-v2 --dataset IL_PCR
+
+python -m preprocess.vectoriser --model_name dunzhang/stella_en_1.5B_v5 --dataset IL_PCR

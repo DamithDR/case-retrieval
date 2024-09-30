@@ -1,6 +1,10 @@
-pandas
-transformers==4.42.4
-datasets
+pandas==2.2.3
+transformers==4.44.2
+datasets==3.0.0
 einops
 accelerate
 flash-attn==2.2.0
+FlagEmbedding==1.2.11
+numpy==2.1.1
+torch==2.4.1+cu121
+peft
