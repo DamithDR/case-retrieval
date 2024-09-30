@@ -34,6 +34,7 @@ class irled(DataClass):
                     text = file.read()
                 ids.append(os.path.splitext(filename)[0])
                 data.append(text)
+                print(text)
         return ids, text
 
     def get_candidates(self):
