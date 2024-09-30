@@ -1,3 +1,4 @@
+from abc import abstractmethod
 
 from transformers import AutoTokenizer
 
@@ -7,6 +8,7 @@ class AbsEmbed():
         self.name = name
         self.tokeniser = AutoTokenizer.from_pretrained(self.name)
 
+    @abstractmethod
     def vectorise(self, data):
         pass
 
