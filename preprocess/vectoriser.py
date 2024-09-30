@@ -88,12 +88,12 @@ def vectorise_dataset(model_class, data_class):
     save_embeddings(embeddings, ids, 'data', model_alias, dataset_alias)
 
 
-def vectorise(model_class, data_class):
+def vectorise(model_class, data_class, dataset):
     print('came to vectorise')
-    if data_class.get_name() in ['irled', 'ilpcr']:
+    if dataset in ['irled', 'ilpcr']:
         vectorise_queries(model_class, data_class)
         vectorise_candidates(model_class, data_class)
-    elif data_class.get_name() in ['muser', 'coliee', 'ecthr']:
+    elif dataset in ['muser', 'coliee', 'ecthr']:
         vectorise_dataset(model_class, data_class)
 
 
@@ -103,7 +103,7 @@ def run(args):
     data_class = get_data_class(args.dataset)
     model_class = get_model_class(args.model_name)
 
-    vectorise(model_class, data_class)
+    vectorise(model_class, data_class, args.dataset)
 
 
 if __name__ == '__main__':
