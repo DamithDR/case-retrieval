@@ -20,4 +20,6 @@ source <(grep -v '^#' .env | xargs -d '\n')
 
 huggingface-cli login --token $HUGGINGFACE_TOKEN
 
-python -m preprocess.vectoriser --model_name nvidia/NV-Embed-v2 --dataset IL_PCR
+python -m preprocess.vectoriser --model_name BAAI/bge-en-icl --dataset $1
+python -m preprocess.vectoriser --model_name dunzhang/stella_en_1.5B_v5 --dataset $1
+python -m preprocess.vectoriser --model_name Salesforce/SFR-Embedding-2_R --dataset $1

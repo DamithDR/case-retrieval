@@ -35,7 +35,7 @@ def run(args):
 
     # get the embeddings with DataLoader (spliting the datasets into multiple mini-batches)
     # batch_size=2
-    # query_embeddings = model._do_encode(queries, batch_size=batch_size, instruction=query_prefix, max_length=max_length, num_workers=32, return_numpy=True)
+    # query_embeddings = model._do_encode(candidates, batch_size=batch_size, instruction=query_prefix, max_length=max_length, num_workers=32, return_numpy=True)
     # passage_embeddings = model._do_encode(passages, batch_size=batch_size, instruction=passage_prefix, max_length=max_length, num_workers=32, return_numpy=True)
 
     scores = (query_embeddings @ passage_embeddings.T) * 100
