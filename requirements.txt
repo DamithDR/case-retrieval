@@ -8,3 +8,4 @@ FlagEmbedding
 numpy
 peft
 sentencepiece
+protobuf
