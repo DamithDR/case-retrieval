@@ -3,6 +3,7 @@ transformers==4.44.2
 datasets
 einops
 accelerate
+flash-attn
 FlagEmbedding
 numpy
 peft
