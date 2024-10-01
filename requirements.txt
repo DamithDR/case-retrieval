@@ -7,3 +7,4 @@ flash-attn
 FlagEmbedding
 numpy
 peft
+sentencepiece
