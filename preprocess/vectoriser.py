@@ -8,8 +8,8 @@ from util.name_handler import get_data_class, get_model_class, get_save_names
 
 
 def save_embeddings(embeddings, ids, split_alias, model_alias, dataset_alias):
-    embeddings_df = pd.DataFrame({'ids': ids, 'embeddings': embeddings})
-    embeddings_df['embeddings'] = embeddings_df['embeddings'].apply(lambda x: json.dumps(x.tolist()))
+    embeddings_df = pd.DataFrame({'ids': ids})
+    embeddings_df['embeddings'] = embeddings.apply(lambda x: json.dumps(x.tolist()))
 
     save_path = f'embeddings/{model_alias}'
     if not os.path.exists(save_path): os.makedirs(save_path)
