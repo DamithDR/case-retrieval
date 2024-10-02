@@ -18,35 +18,16 @@ from util.similarity import cosine_similarity
 
 def load_embeddings(dataset, model):
     model_path = standadise_name(model)
-    query_embeddings = None
-    candidate_embeddings = None
-    if dataset == 'coliee':
-        df = pd.read_csv(f'embeddings/{model_path}/coliee_embeddings.csv')
-        df['embeddings'] = df['embeddings'].apply(lambda x: np.array(json.loads(x)))
-        # df['embeddings'] = df['embeddings'].apply(lambda x: np.fromstring(x.strip('[]'), sep=','))
-        query_embeddings = candidate_embeddings = df
-    elif dataset == 'muser':
-        df = pd.read_csv(f'embeddings/{model_path}/muser_cases_pool.json_embeddings.csv')
-        df['embeddings'] = df['embeddings'].apply(lambda x: np.array(json.loads(x)))
-        query_embeddings = candidate_embeddings = df
-    elif dataset == 'ecthr':
-        df = pd.read_csv(f'embeddings/{model_path}/ECTHR-PCR_embeddings.csv')
-        df['embeddings'] = df['embeddings'].apply(lambda x: np.array(json.loads(x)))
-        query_embeddings = candidate_embeddings = df
-    elif dataset == 'irled':
-        query_embeddings = pd.read_csv(f'embeddings/{model_path}/irled_queries.csv')
-        query_embeddings['embeddings'] = query_embeddings['embeddings'].apply(lambda x: np.array(json.loads(x)))
 
-        candidate_embeddings = pd.read_csv(f'embeddings/{model_path}/irled_candidates.csv')
-        candidate_embeddings['embeddings'] = candidate_embeddings['embeddings'].apply(lambda x: np.array(json.loads(x)))
-    elif dataset == 'ilpcr':
-        query_embeddings = pd.read_csv(f'embeddings/{model_path}/IL-TUR_queries.csv')
-        query_embeddings['embeddings'] = query_embeddings['embeddings'].apply(lambda x: np.array(json.loads(x)))
+    embeddings_path = f'embeddings/{model_path}/{dataset}'
+    embeddings = dict()
 
-        candidate_embeddings = pd.read_csv(f'embeddings/{model_path}/IL-TUR_candidates.csv')
-        candidate_embeddings['embeddings'] = candidate_embeddings['embeddings'].apply(lambda x: np.array(json.loads(x)))
-
-    return query_embeddings, candidate_embeddings
+    for filename in os.listdir(embeddings_path):
+        if filename.endswith('.npy'):
+            file_path = os.path.join(embeddings_path, filename)
+            embedding = np.load(file_path)
+            embeddings[filename.split('.npy')[0]] = embedding
+    return embeddings
 
 
 def get_embeddings_by_id(df, target_id):
@@ -56,24 +37,33 @@ def get_embeddings_by_id(df, target_id):
 
 def get_similarity(query, candidates):
     similarity_scores = []
-    for candidate in candidates:
-        similarity = cosine_similarity(query, candidate)
+    candidate_keys = []
+    for key, embedding in candidates.items():
+        similarity = cosine_similarity(query, embedding)
         similarity_scores.append(similarity)
-    print(similarity_scores)
+        candidate_keys.append(key)
+    return candidate_keys, similarity_scores
 
 
 def get_threshold(query_embeddings, candidate_embeddings, eval):
     for case, citations in eval.items():
-        query = get_embeddings_by_id(query_embeddings, case)
-        get_similarity(query, candidate_embeddings['embeddings'])
+        case = '010955.txt'  # todo remove after testing
+        q_embed = query_embeddings[case]
+        keys, similarity = get_similarity(q_embed, candidate_embeddings)
 
     # todo finish
 
 
 def run(dataset, model):
-    eval, test = get_data_class(dataset).get_eval_data()
-    query_embeddings, candidate_embeddings = load_embeddings(dataset, model)
-
+    data_class = get_data_class(dataset)
+    eval, test = data_class.get_eval_data()
+    candidate_embeddings = load_embeddings(dataset, model)
+    query_embeddings = dict()
+    if dataset == 'ilpcr' or dataset == 'irled':
+        query_ids = data_class.get_query_ids()
+        query_embeddings = {key: candidate_embeddings.pop(key) for key in query_ids}
+    elif dataset == 'coliee' or dataset == 'muser' or dataset == 'ecthr':
+        query_embeddings = candidate_embeddings
     threshold = get_threshold(query_embeddings, candidate_embeddings, eval)
 
 
