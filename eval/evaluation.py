@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 
 import numpy as np
@@ -21,32 +22,29 @@ def load_embeddings(dataset, model):
     candidate_embeddings = None
     if dataset == 'coliee':
         df = pd.read_csv(f'embeddings/{model_path}/coliee_embeddings.csv')
-        df['embeddings'] = df['embeddings'].apply(lambda x: np.fromstring(x.strip('[]'), sep=','))
+        df['embeddings'] = df['embeddings'].apply(lambda x: np.array(json.loads(x)))
+        # df['embeddings'] = df['embeddings'].apply(lambda x: np.fromstring(x.strip('[]'), sep=','))
         query_embeddings = candidate_embeddings = df
     elif dataset == 'muser':
         df = pd.read_csv(f'embeddings/{model_path}/muser_cases_pool.json_embeddings.csv')
-        df['embeddings'] = df['embeddings'].apply(lambda x: np.fromstring(x.strip('[]'), sep=','))
+        df['embeddings'] = df['embeddings'].apply(lambda x: np.array(json.loads(x)))
         query_embeddings = candidate_embeddings = df
     elif dataset == 'ecthr':
         df = pd.read_csv(f'embeddings/{model_path}/ECTHR-PCR_embeddings.csv')
-        df['embeddings'] = df['embeddings'].apply(lambda x: np.fromstring(x.strip('[]'), sep=','))
+        df['embeddings'] = df['embeddings'].apply(lambda x: np.array(json.loads(x)))
         query_embeddings = candidate_embeddings = df
     elif dataset == 'irled':
         query_embeddings = pd.read_csv(f'embeddings/{model_path}/irled_queries.csv')
-        query_embeddings['embeddings'] = query_embeddings['embeddings'].apply(
-            lambda x: np.fromstring(x.strip('[]'), sep=','))
+        query_embeddings['embeddings'] = query_embeddings['embeddings'].apply(lambda x: np.array(json.loads(x)))
 
         candidate_embeddings = pd.read_csv(f'embeddings/{model_path}/irled_candidates.csv')
-        candidate_embeddings['embeddings'] = candidate_embeddings['embeddings'].apply(
-            lambda x: np.fromstring(x.strip('[]'), sep=','))
+        candidate_embeddings['embeddings'] = candidate_embeddings['embeddings'].apply(lambda x: np.array(json.loads(x)))
     elif dataset == 'ilpcr':
         query_embeddings = pd.read_csv(f'embeddings/{model_path}/IL-TUR_queries.csv')
-        query_embeddings['embeddings'] = query_embeddings['embeddings'].apply(
-            lambda x: np.fromstring(x.strip('[]'), sep=','))
+        query_embeddings['embeddings'] = query_embeddings['embeddings'].apply(lambda x: np.array(json.loads(x)))
 
         candidate_embeddings = pd.read_csv(f'embeddings/{model_path}/IL-TUR_candidates.csv')
-        candidate_embeddings['embeddings'] = candidate_embeddings['embeddings'].apply(
-            lambda x: np.fromstring(x.strip('[]'), sep=','))
+        candidate_embeddings['embeddings'] = candidate_embeddings['embeddings'].apply(lambda x: np.array(json.loads(x)))
 
     return query_embeddings, candidate_embeddings
 
@@ -69,7 +67,7 @@ def get_threshold(query_embeddings, candidate_embeddings, eval):
         query = get_embeddings_by_id(query_embeddings, case)
         get_similarity(query, candidate_embeddings['embeddings'])
 
-    #todo finish
+    # todo finish
 
 
 def run(dataset, model):
