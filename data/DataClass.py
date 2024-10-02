@@ -13,3 +13,7 @@ class DataClass:
 
     def get_name(self):
         return self.name
+
+    def get_eval_data(self):
+        pass
+

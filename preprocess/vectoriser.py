@@ -1,57 +1,14 @@
 import argparse
 import os
 
-import numpy as np
 import pandas as pd
 
-from data.coliee import coliee
-from data.ecthr import ecthr
-from data.ilpcr import ilpcr
-from data.irled import irled
-from data.muser import muser
-from models.flagembed import flag
-from models.nvembedv2 import Nvembedv2
-from models.sftembed import sfr
-from models.stellaembed import stella
-
-
-def get_data_class(dataset):
-    if dataset == 'ilpcr':
-        return ilpcr()
-    elif dataset == 'coliee':
-        return coliee()
-    elif dataset == 'irled':
-        return irled()
-    elif dataset == 'muser':
-        return muser()
-    elif dataset == 'ecthr':
-        return ecthr()
-
-
-def get_model_class(model_name):
-    if model_name == 'nvidia/NV-Embed-v2':
-        return Nvembedv2()
-    elif model_name == 'BAAI/bge-en-icl':
-        return flag()
-    elif model_name == 'Salesforce/SFR-Embedding-2_R':
-        return sfr()
-    elif model_name == 'dunzhang/stella_en_1.5B_v5':
-        return stella()
-
-
-def standadise_name(name):
-    return name.split('/')[-1] if name.__contains__('/') else name
-
-
-def get_save_names(model_class, data_class):
-    model_name = model_class.get_name()
-    data_name = data_class.get_name()
-    return standadise_name(model_name), standadise_name(data_name)
+from util.name_handler import get_data_class, get_model_class, get_save_names
 
 
 def save_embeddings(embeddings, ids, split_alias, model_alias, dataset_alias):
-    embeddings_df = pd.DataFrame(
-        {'ids': ids, 'embeddings': [np.array2string(embedding, separator=',') for embedding in embeddings]})
+    embeddings_df = pd.DataFrame({'ids': ids, 'embeddings': embeddings})
+    embeddings_df['embeddings'] = embeddings_df['embeddings'].apply(lambda x: x.tolist())
 
     save_path = f'embeddings/{model_alias}'
     if not os.path.exists(save_path): os.makedirs(save_path)
@@ -61,24 +18,24 @@ def save_embeddings(embeddings, ids, split_alias, model_alias, dataset_alias):
 
 
 def vectorise_candidates(model_class, data_class):
-    candidate_embeddings = model_class.vectorise(data_class.get_candidates())
-    ids = data_class.get_candidate_ids()
+    candidate_embeddings = model_class.vectorise(data_class.get_candidates()[:10])
+    ids = data_class.get_candidate_ids()[:10]
 
     model_alias, dataset_alias = get_save_names(model_class, data_class)
     save_embeddings(candidate_embeddings, ids, 'candidates', model_alias, dataset_alias)
 
 
 def vectorise_queries(model_class, data_class):
-    query_embeddings = model_class.vectorise(data_class.get_queries())
-    ids = data_class.get_query_ids()
+    query_embeddings = model_class.vectorise(data_class.get_queries()[:10])
+    ids = data_class.get_query_ids()[:10]
 
     model_alias, dataset_alias = get_save_names(model_class, data_class)
     save_embeddings(query_embeddings, ids, 'queries', model_alias, dataset_alias)
 
 
 def vectorise_dataset(model_class, data_class):
-    embeddings = model_class.vectorise(data_class.get_data())
-    ids = data_class.get_ids()
+    embeddings = model_class.vectorise(data_class.get_data()[:10])
+    ids = data_class.get_ids()[:10]
 
     model_alias, dataset_alias = get_save_names(model_class, data_class)
     save_embeddings(embeddings, ids, 'embeddings', model_alias, dataset_alias)

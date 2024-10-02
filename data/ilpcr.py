@@ -1,3 +1,5 @@
+import random
+
 from datasets import load_dataset
 
 from data.DataClass import DataClass
@@ -40,3 +42,22 @@ class ilpcr(DataClass):
 
     def get_query_ids(self):
         return self.query_ids
+
+    def get_eval_data(self):
+        dataset = load_dataset(self.name, "pcr", split='test_queries')
+        cases = dataset['id']
+        citations = dataset['relevant_candidates']
+
+        data = dict()
+        test_filter = dict()
+        for case, citation_list in zip(cases, citations):
+            data[case] = citation_list
+            if len(citation_list) > 0:
+                test_filter[case] = citation_list
+
+        random.seed(42)
+        split_size = int(len(list(test_filter.keys())) / 10)
+        selected_keys = random.sample(list(test_filter.keys()), split_size)
+
+        eval = {key: data.pop(key) for key in selected_keys}
+        return eval, data
