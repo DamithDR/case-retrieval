@@ -11,6 +11,7 @@ def save_embeddings(embeddings, ids, model_alias, dataset_alias):
     if not os.path.exists(save_path): os.makedirs(save_path)
 
     for id, embedding in zip(ids, embeddings):
+        id = str(id).replace('/', '-')
         np.save(f'{save_path}/{id}.npy', embedding)
 
     print(f'saving complete : {save_path}/{dataset_alias}/{dataset_alias}.csv')
