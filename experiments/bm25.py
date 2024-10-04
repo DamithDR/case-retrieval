@@ -81,7 +81,7 @@ def run(dataset):
 
 
 if __name__ == '__main__':
-    run('ilpcr')
-    run('irled')
+    # run('ilpcr')
+    # run('irled')
     run('coliee')
     run('muser')
