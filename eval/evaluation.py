@@ -35,23 +35,40 @@ def get_embeddings_by_id(df, target_id):
     return embeddings
 
 
-def get_similarity(query, candidates):
+def get_similarity(case, query_embeddings, candidate_embeddings):
     similarity_scores = []
     candidate_keys = []
-    for key, embedding in candidates.items():
-        similarity = cosine_similarity(query, embedding)
-        similarity_scores.append(similarity)
-        candidate_keys.append(key)
+    q_embed = query_embeddings[case]
+    for key, embedding in candidate_embeddings.items():
+        if key != case:
+            similarity = cosine_similarity(q_embed, embedding)
+            similarity_scores.append(similarity)
+            candidate_keys.append(key)
     return candidate_keys, similarity_scores
 
 
 def get_threshold(query_embeddings, candidate_embeddings, eval):
-    for case, citations in eval.items():
-        case = '010955.txt'  # todo remove after testing
-        q_embed = query_embeddings[case]
-        keys, similarity = get_similarity(q_embed, candidate_embeddings)
+    current_threshold = 0.95
 
-    # todo finish
+    results_dict = {}
+    for case, citations in eval.items():
+        keys, similarity = get_similarity(case, query_embeddings, candidate_embeddings)
+        results_dict[case] = {'keys': keys, 'similarity': similarity}
+
+    while current_threshold > 0:
+        cases = []
+        gold = []
+        predictions = []
+        for case, citations in eval.items():
+            cases.append(case)
+            gold.append(citations)
+            results = results_dict[case]
+            for key, score in zip(results['keys'], results['similarity']):
+                if score > current_threshold:
+                    predictions.append(key)
+
+        # evaluate and remember the highest f1 and threshold
+        current_threshold -= 0.05
 
 
 def run(dataset, model):
