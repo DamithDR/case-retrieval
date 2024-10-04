@@ -21,8 +21,8 @@ class muser(DataClass):
                 for
                 key, value in data.items()]
         df = pd.DataFrame(rows)
-        self.ids = df['id']
-        self.data = df['text']
+        self.ids = df['id'].tolist()
+        self.data = df['text'].tolist()
 
     def get_ids(self):
         return self.ids
