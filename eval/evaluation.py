@@ -1,19 +1,10 @@
 import argparse
-import json
 import os
 
 import numpy as np
-import pandas as pd
 
-from data.coliee import coliee
-from data.ecthr import ecthr
-from data.ilpcr import ilpcr
-from data.irled import irled
-from data.muser import muser
 from util.metric import recall_at_k, mean_average_precision
 from util.name_handler import get_data_class, standadise_name, get_embedding_folder
-from sentence_transformers import util
-
 from util.similarity import cosine_similarity, sort_by_numbers_desc
 
 

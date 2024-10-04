@@ -9,3 +9,5 @@ numpy
 peft
 sentencepiece
 protobuf
+rank-bm25
+nltk
