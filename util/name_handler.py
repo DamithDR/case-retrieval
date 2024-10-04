@@ -22,6 +22,19 @@ def get_data_class(dataset):
         return ecthr()
 
 
+def get_embedding_folder(dataset):
+    if dataset == 'ilpcr':
+        return 'IL-TUR'
+    elif dataset == 'coliee':
+        return 'coliee'
+    elif dataset == 'irled':
+        return 'irled'
+    elif dataset == 'muser':
+        return 'muser_cases_pool.json'
+    elif dataset == 'ecthr':
+        return 'ECTHR-PCR'
+
+
 def get_model_class(model_name):
     if model_name == 'nvidia/NV-Embed-v2':
         return Nvembedv2()

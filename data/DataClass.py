@@ -14,6 +14,6 @@ class DataClass:
     def get_name(self):
         return self.name
 
-    def get_eval_data(self):
+    def get_gold_data(self):
         pass
 

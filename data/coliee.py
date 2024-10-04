@@ -27,13 +27,7 @@ class coliee(DataClass):
     def get_data(self):
         return self.data
 
-    def get_eval_data(self):
+    def get_gold_data(self):
         with open('data/gold_annot/coliee.json', 'r') as f:
             data = json.loads(f.read())
-            random.seed(42)
-            split_size = int(len(list(data.keys())) / 10)
-            selected_keys = random.sample(list(data.keys()), split_size)
-
-            eval = {key: data.pop(key) for key in selected_keys}
-
-        return eval, data
+        return data

@@ -27,21 +27,14 @@ class ecthr(DataClass):
     def get_data(self):
         return self.data
 
-    def get_eval_data(self):
+    def get_gold_data(self):
         dataset = load_dataset(self.name, split='train')
         cases = dataset['appno']
         citations = dataset['citations']
 
         data = dict()
-        test_filter = dict()
         for case, citation_list in zip(cases, citations):
-            data[case] = ast.literal_eval(citation_list)
             if len(citation_list) > 0:
-                test_filter[case] = ast.literal_eval(citation_list)
+                data[case] = ast.literal_eval(citation_list)
 
-        random.seed(42)
-        split_size = int(len(list(test_filter.keys())) / 10)
-        selected_keys = random.sample(list(test_filter.keys()), split_size)
-
-        eval = {key: data.pop(key) for key in selected_keys}
-        return eval, data
+        return data

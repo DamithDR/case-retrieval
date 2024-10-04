@@ -49,7 +49,7 @@ class irled(DataClass):
     def get_query_ids(self):
         return self.query_ids
 
-    def get_eval_data(self):
+    def get_gold_data(self):
         data = dict()
         with open('data/gold_annot/irled-qrel.txt', 'r') as f:
             annotations = f.readlines()
@@ -59,9 +59,4 @@ class irled(DataClass):
                     data[case].append(citation)
                 else:
                     data[case] = [citation]
-        random.seed(42)
-        split_size = int(len(list(data.keys())) / 10)
-        selected_keys = random.sample(list(data.keys()), split_size)
-
-        eval = {key: data.pop(key) for key in selected_keys}
-        return eval, data
+        return data

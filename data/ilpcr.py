@@ -14,7 +14,6 @@ class ilpcr(DataClass):
         self.candidates_ids = []
         super().__init__('Exploration-Lab/IL-TUR')
 
-
     def load_data(self):
         self.load_candidates()
         self.load_queries()
@@ -43,21 +42,13 @@ class ilpcr(DataClass):
     def get_query_ids(self):
         return self.query_ids
 
-    def get_eval_data(self):
+    def get_gold_data(self):
         dataset = load_dataset(self.name, "pcr", split='test_queries')
         cases = dataset['id']
         citations = dataset['relevant_candidates']
 
         data = dict()
-        test_filter = dict()
         for case, citation_list in zip(cases, citations):
-            data[case] = citation_list
             if len(citation_list) > 0:
-                test_filter[case] = citation_list
-
-        random.seed(42)
-        split_size = int(len(list(test_filter.keys())) / 10)
-        selected_keys = random.sample(list(test_filter.keys()), split_size)
-
-        eval = {key: data.pop(key) for key in selected_keys}
-        return eval, data
+                data[case] = citation_list
+        return data
