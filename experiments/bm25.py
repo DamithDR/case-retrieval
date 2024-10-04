@@ -1,3 +1,4 @@
+import jieba as jieba
 import nltk
 import numpy as np
 from nltk.tokenize import word_tokenize
@@ -38,13 +39,20 @@ def run(dataset):
             queries.append(text)
 
     # Tokenize the documents
-    tokenized_documents = [word_tokenize(doc.lower()) for doc in candidates]
+    if dataset == 'muser':
+        tokenized_documents = [list(jieba.cut(doc)) for doc in candidates]
+    else:
+        tokenized_documents = [word_tokenize(doc.lower()) for doc in candidates]
     bm25 = BM25Okapi(tokenized_documents)
 
     results_dict = {}
     for case, citations in gold.items():
-        query = queries.pop(query_ids.index(case))
-        tokenized_query = word_tokenize(query.lower())
+        q_idx = query_ids.index(case)
+        query = queries[q_idx]
+        if dataset == 'muser':
+            tokenized_query = list(jieba.cut(query))
+        else:
+            tokenized_query = word_tokenize(query.lower())
 
         scores = bm25.get_scores(tokenized_query)
 
@@ -76,4 +84,4 @@ if __name__ == '__main__':
     run('ilpcr')
     run('irled')
     run('coliee')
-    run('muser')
+    # run('muser')
