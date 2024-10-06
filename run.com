@@ -13,7 +13,7 @@ source /etc/profile
 module add anaconda3/2023.09
 module add cuda/12.0
 
-source activate /storage/hpc/41/dolamull/conda_envs/llm_env
+source activate /scratch/hpc/41/dolamull/conda_envs/llm_env
 export HF_HOME=/scratch/hpc/41/dolamull/hf_cache
 
 source <(grep -v '^#' .env | xargs -d '\n')
