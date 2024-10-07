@@ -1,13 +1,14 @@
 pandas
-transformers==4.44.2
+transformers==4.42.4
 datasets
 einops
 accelerate
 flash-attn
-FlagEmbedding
+FlagEmbedding==2.2.0
 numpy
 peft
 sentencepiece
 protobuf
 rank-bm25
 nltk
+sentence-transformers==2.7.0
