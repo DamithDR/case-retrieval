@@ -1,9 +1,9 @@
 pandas
-transformers==4.42.4
+transformers==4.44.2
 datasets
 einops
 accelerate
-flash-attn==2.2.0
+flash-attn
 FlagEmbedding
 numpy
 peft
