@@ -1,5 +1,5 @@
 pandas
-transformers==4.44.2
+transformers==4.42.4
 datasets
 einops
 accelerate
