@@ -9,7 +9,7 @@ class Nvembedv2(AbsEmbed):
 
         self.model.max_seq_length = 3072
         self.model.tokenizer.padding_side = "right"
-        self.batch_size = 2
+        self.batch_size = 1
 
     def vectorise(self, data):
         embeddings = self.model.encode(data, show_progress_bar=True,
