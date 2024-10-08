@@ -8,7 +8,7 @@ class legalbert(AbsEmbed):
         super().__init__('nlpaueb/legal-bert-base-uncased')
         self.model = SentenceTransformer(self.name, trust_remote_code=True)
 
-        self.model.max_seq_length = 3072
+        self.model.max_seq_length = 512
         self.model.tokenizer.padding_side = "right"
         self.batch_size = 16
 
