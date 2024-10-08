@@ -4,6 +4,7 @@ from data.ilpcr import ilpcr
 from data.irled import irled
 from data.muser import muser
 from models.flagembed import flag
+from models.legalbert import legalbert
 from models.nvembedv2 import Nvembedv2
 from models.sftembed import sfr
 from models.stellaembed import stella
@@ -44,6 +45,8 @@ def get_model_class(model_name):
         return sfr()
     elif model_name == 'dunzhang/stella_en_1.5B_v5':
         return stella()
+    elif model_name == 'nlpaueb/legal-bert-base-uncased':
+        return legalbert()
 
 
 def standadise_name(name):
