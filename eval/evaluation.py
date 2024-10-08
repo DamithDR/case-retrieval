@@ -48,23 +48,38 @@ def calculate_metrics(query_embeddings, candidate_embeddings, test):
 
     gold = []
     predictions = []
-    recall_at_50_values = []
-    recall_at_100_values = []
-    recall_at_500_values = []
+    f1_1_values = []
+    f1_5_values = []
+    f1_10_values = []
+    f1_15_values = []
+    f1_20_values = []
+    f1_50_values = []
+    f1_100_values = []
+    f1_500_values = []
     for case, citations in test.items():
         gold.append(citations)
         results = results_dict[case]
         values, labels = sort_by_numbers_desc(results['similarity'], results['keys'])
         predictions.append(labels)
-        recall_at_50_values.append(recall_at_k(labels, citations, 50))
-        recall_at_100_values.append(recall_at_k(labels, citations, 100))
-        recall_at_500_values.append(recall_at_k(labels, citations, 500))
+        f1_1_values.append(recall_at_k(labels, citations, 1))
+        f1_5_values.append(recall_at_k(labels, citations, 5))
+        f1_10_values.append(recall_at_k(labels, citations, 10))
+        f1_15_values.append(recall_at_k(labels, citations, 15))
+        f1_20_values.append(recall_at_k(labels, citations, 20))
+        f1_50_values.append(recall_at_k(labels, citations, 50))
+        f1_100_values.append(recall_at_k(labels, citations, 100))
+        f1_500_values.append(recall_at_k(labels, citations, 500))
     MAP = mean_average_precision(predictions, gold)
-    k_50 = np.mean(recall_at_50_values)
-    k_100 = np.mean(recall_at_100_values)
-    k_500 = np.mean(recall_at_500_values)
+    k_1 = np.mean(f1_1_values)
+    k_5 = np.mean(f1_5_values)
+    k_10 = np.mean(f1_10_values)
+    k_15 = np.mean(f1_15_values)
+    k_20 = np.mean(f1_20_values)
+    k_50 = np.mean(f1_50_values)
+    k_100 = np.mean(f1_100_values)
+    k_500 = np.mean(f1_500_values)
 
-    return MAP, k_50, k_100, k_500
+    return [MAP, k_1, k_5, k_10, k_15, k_20, k_50, k_100, k_500]
 
 
 def run(dataset, model):
@@ -77,16 +92,28 @@ def run(dataset, model):
         query_embeddings = {key: candidate_embeddings.pop(key) for key in query_ids}
     elif dataset == 'coliee' or dataset == 'muser' or dataset == 'ecthr':
         query_embeddings = candidate_embeddings
-    MAP, k_50, k_100, k_500 = calculate_metrics(query_embeddings, candidate_embeddings, gold)
+    results = [MAP, k_1, k_5, k_10, k_15, k_20, k_50, k_100, k_500] = calculate_metrics(query_embeddings,
+                                                                                        candidate_embeddings, gold)
+    results = [str(round(result, 2)) for result in results]
 
-    print(
-        f'Model : {model} | Dataset : {dataset} | MAP : {MAP} | recall@50 : {k_50} | recall@100 : {k_100} | recall@500 : {k_500}')
+    if not os.path.exists('results.csv'):
+        with open('results.csv', 'a') as f:
+            f.write("Model,Dataset,MAP,k_1,k_5,k_10,k_15,k_20,k_50,k_100,k_500\n")
+    with open('results.csv', 'a') as f:
+        results_str = ",".join(results)
+        f.write(f'{model},{dataset},{results_str}\n')
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description='''case vectoriser arguments''')
-    parser.add_argument('--model_name', type=str, required=True, help='model_name')
-    parser.add_argument('--dataset', type=str, required=True, help='dataset')
-    args = parser.parse_args()
-    run(args.dataset, args.model_name)
+    # parser = argparse.ArgumentParser(
+    #     description='''case vectoriser arguments''')
+    # parser.add_argument('--model_name', type=str, required=True, help='model_name')
+    # parser.add_argument('--dataset', type=str, required=True, help='dataset')
+    # args = parser.parse_args()
+
+    datasets = ['ilpcr', 'coliee', 'irled', 'muser']
+    models = ['BAAI/bge-en-icl', 'Salesforce/SFR-Embedding-2_R', 'dunzhang/stella_en_1.5B_v5']
+
+    for model in models:
+        for dataset in datasets:
+            run(dataset, model)

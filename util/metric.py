@@ -22,6 +22,61 @@ def recall_at_k(recommended_items, relevant_items, k):
     return recall
 
 
+def precision_at_k(recommended_items, relevant_items, k):
+    """
+    Calculate Precision@K
+
+    Args:
+        recommended_items (list): List of items recommended by the model.
+        relevant_items (list): List of relevant (ground-truth) items.
+        k (int): Number of top recommendations to consider.
+
+    Returns:
+        float: Precision@K score.
+    """
+    # Get top-k recommended items
+    top_k_recommendations = recommended_items[:k]
+
+    # Count the number of relevant items in the top-k recommendations
+    relevant_in_top_k = len(set(top_k_recommendations) & set(relevant_items))
+
+    # Calculate precision@k
+    precision = relevant_in_top_k / k if k > 0 else 0
+
+    return precision
+
+
+def f1_at_k(recommended_items, relevant_items, k):
+    """
+    Calculate F1@K
+
+    Args:
+        recommended_items (list): List of items recommended by the model.
+        relevant_items (list): List of relevant (ground-truth) items.
+        k (int): Number of top recommendations to consider.
+
+    Returns:
+        float: F1@K score.
+    """
+    # Get top-k recommended items
+    top_k_recommendations = recommended_items[:k]
+
+    # Count the number of relevant items in the top-k recommendations
+    relevant_in_top_k = len(set(top_k_recommendations) & set(relevant_items))
+
+    # Calculate precision@k
+    precision = relevant_in_top_k / k if k > 0 else 0
+
+    # Calculate recall@k
+    recall = relevant_in_top_k / len(relevant_items) if relevant_items else 0
+
+    # Calculate F1@K (harmonic mean of precision and recall)
+    if precision + recall == 0:
+        return 0
+    f1 = 2 * (precision * recall) / (precision + recall)
+
+    return f1
+
 def average_precision(recommended_items, relevant_items):
     """
     Calculate the Average Precision (AP) for a single query.
