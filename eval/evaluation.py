@@ -3,7 +3,7 @@ import os
 
 import numpy as np
 
-from util.metric import recall_at_k, mean_average_precision
+from util.metric import recall_at_k, mean_average_precision, f1_at_k
 from util.name_handler import get_data_class, standadise_name, get_embedding_folder
 from util.similarity import cosine_similarity, sort_by_numbers_desc
 
@@ -61,14 +61,14 @@ def calculate_metrics(query_embeddings, candidate_embeddings, test):
         results = results_dict[case]
         values, labels = sort_by_numbers_desc(results['similarity'], results['keys'])
         predictions.append(labels)
-        f1_1_values.append(recall_at_k(labels, citations, 1))
-        f1_5_values.append(recall_at_k(labels, citations, 5))
-        f1_10_values.append(recall_at_k(labels, citations, 10))
-        f1_15_values.append(recall_at_k(labels, citations, 15))
-        f1_20_values.append(recall_at_k(labels, citations, 20))
-        f1_50_values.append(recall_at_k(labels, citations, 50))
-        f1_100_values.append(recall_at_k(labels, citations, 100))
-        f1_500_values.append(recall_at_k(labels, citations, 500))
+        f1_1_values.append(f1_at_k(labels, citations, 1))
+        f1_5_values.append(f1_at_k(labels, citations, 5))
+        f1_10_values.append(f1_at_k(labels, citations, 10))
+        f1_15_values.append(f1_at_k(labels, citations, 15))
+        f1_20_values.append(f1_at_k(labels, citations, 20))
+        f1_50_values.append(f1_at_k(labels, citations, 50))
+        f1_100_values.append(f1_at_k(labels, citations, 100))
+        f1_500_values.append(f1_at_k(labels, citations, 500))
     MAP = mean_average_precision(predictions, gold)
     k_1 = np.mean(f1_1_values)
     k_5 = np.mean(f1_5_values)
