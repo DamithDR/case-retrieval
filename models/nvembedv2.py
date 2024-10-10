@@ -1,18 +1,26 @@
+import torch.nn.functional as F
+from transformers import AutoModel
+
 from models.absembed import AbsEmbed
-from sentence_transformers import SentenceTransformer
 
 
 class Nvembedv2(AbsEmbed):
     def __init__(self):
         super().__init__('nvidia/NV-Embed-v2')
-        self.model = SentenceTransformer(self.name, trust_remote_code=True)
+        self.model = AutoModel.from_pretrained('nvidia/NV-Embed-v2', trust_remote_code=True)
 
         self.model.max_seq_length = 3072
         self.model.tokenizer.padding_side = "right"
-        self.batch_size = 1
+        self.batch_size = 16
 
     def vectorise(self, data):
-        embeddings = self.model.encode(data, show_progress_bar=True,
-                                       batch_size=self.batch_size,
-                                       normalize_embeddings=True)
-        return embeddings
+        all_embeddings = []
+        for i in range(0, len(data), self.batch_size):
+            if i + self.batch_size > len(data):
+                batch_data = data[i:]
+            else:
+                batch_data = data[i:i + self.batch_size]
+            batch_embeddings = self.model.encode(batch_data, instruction="", max_length=self.model.max_seq_length)
+            batch_embeddings = F.normalize(batch_embeddings, p=2, dim=1)
+            all_embeddings.append(batch_embeddings)
+        return all_embeddings
