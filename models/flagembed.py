@@ -1,4 +1,4 @@
-from FlagEmbedding import FlagICLModel
+from sentence_transformers import SentenceTransformer
 
 from models.absembed import AbsEmbed
 
@@ -7,11 +7,14 @@ class flag(AbsEmbed):
 
     def __init__(self):
         super().__init__('BAAI/bge-en-icl')
-        self.model = FlagICLModel(self.name, query_instruction_for_retrieval="", normalize_embeddings=True)
+        self.model = SentenceTransformer(self.name, trust_remote_code=True)
 
         self.max_seq_length = 3072
         self.model.tokenizer.padding_side = "right"
-        self.batch_size = 2
+        self.batch_size = 16
 
     def vectorise(self, data):
-        return self.model.encode_corpus(data, max_length=self.max_seq_length, batch_size=self.batch_size)
+        embeddings = self.model.encode(data, show_progress_bar=True,
+                                       batch_size=self.batch_size,
+                                       normalize_embeddings=True)
+        return embeddings
