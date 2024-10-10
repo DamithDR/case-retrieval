@@ -11,7 +11,7 @@ class flag(AbsEmbed):
 
         self.max_seq_length = 3072
         self.model.tokenizer.padding_side = "right"
-        self.batch_size = 2
+        self.batch_size = 16
 
     def vectorise(self, data):
         return self.model.encode_corpus(data, max_length=self.max_seq_length, batch_size=self.batch_size)
