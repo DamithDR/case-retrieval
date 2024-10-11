@@ -3,9 +3,11 @@ import os
 
 import numpy as np
 
-from util.metric import recall_at_k, mean_average_precision, f1_at_k
+from util.metric import recall_at_k, mean_average_precision, f1_at_k, precision_at_k
 from util.name_handler import get_data_class, standadise_name, get_embedding_folder
 from util.similarity import cosine_similarity, sort_by_numbers_desc
+
+numbers = [1] + list(range(5, 51, 5)) + [100]
 
 
 def load_embeddings(dataset, model):
@@ -31,7 +33,8 @@ def get_embeddings_by_id(df, target_id):
 def get_similarity(case, query_embeddings, candidate_embeddings):
     similarity_scores = []
     candidate_keys = []
-    q_embed = query_embeddings[case.replace('/', '-')]
+    case = case.replace('/', '-')
+    q_embed = query_embeddings[case]
     for key, embedding in candidate_embeddings.items():
         if key != case:
             similarity = cosine_similarity(q_embed, embedding)
@@ -43,43 +46,46 @@ def get_similarity(case, query_embeddings, candidate_embeddings):
 def calculate_metrics(query_embeddings, candidate_embeddings, test):
     results_dict = {}
     for case, citations in test.items():
+        case = case.replace('/', '-')
         keys, similarity = get_similarity(case, query_embeddings, candidate_embeddings)
         results_dict[case] = {'keys': keys, 'similarity': similarity}
 
     gold = []
     predictions = []
-    f1_1_values = []
-    f1_5_values = []
-    f1_10_values = []
-    f1_15_values = []
-    f1_20_values = []
-    f1_50_values = []
-    f1_100_values = []
-    f1_500_values = []
+
+    f1_values = {}
+    p_values = {}
+    r_values = {}
+
+    print(f"eval k values = {numbers}")
+
     for case, citations in test.items():
+        case = case.replace('/', '-')  # for ecthr dataset
+        citations = [citation.replace('/', '-') for citation in citations]  # for ecthr dataset
         gold.append(citations)
         results = results_dict[case]
         values, labels = sort_by_numbers_desc(results['similarity'], results['keys'])
         predictions.append(labels)
-        f1_1_values.append(f1_at_k(labels, citations, 1))
-        f1_5_values.append(f1_at_k(labels, citations, 5))
-        f1_10_values.append(f1_at_k(labels, citations, 10))
-        f1_15_values.append(f1_at_k(labels, citations, 15))
-        f1_20_values.append(f1_at_k(labels, citations, 20))
-        f1_50_values.append(f1_at_k(labels, citations, 50))
-        f1_100_values.append(f1_at_k(labels, citations, 100))
-        f1_500_values.append(f1_at_k(labels, citations, 500))
-    MAP = mean_average_precision(predictions, gold)
-    k_1 = np.mean(f1_1_values)
-    k_5 = np.mean(f1_5_values)
-    k_10 = np.mean(f1_10_values)
-    k_15 = np.mean(f1_15_values)
-    k_20 = np.mean(f1_20_values)
-    k_50 = np.mean(f1_50_values)
-    k_100 = np.mean(f1_100_values)
-    k_500 = np.mean(f1_500_values)
 
-    return [MAP, k_1, k_5, k_10, k_15, k_20, k_50, k_100, k_500]
+        for number in numbers:
+            if number not in f1_values.keys():
+                f1_values[number] = []
+                p_values[number] = []
+                r_values[number] = []
+            f1_values[number].append(f1_at_k(labels, citations, number))
+            p_values[number].append(precision_at_k(labels, citations, number))
+            r_values[number].append(recall_at_k(labels, citations, number))
+
+    MAP = mean_average_precision(predictions, gold)
+    f1_final = []
+    p_final = []
+    r_final = []
+    for number in numbers:
+        f1_final.append(np.mean(f1_values[number]).item())
+        p_final.append(np.mean(p_values[number]).item())
+        r_final.append(np.mean(r_values[number]).item())
+
+    return MAP, f1_final, p_final, r_final
 
 
 def run(dataset, model):
@@ -92,26 +98,38 @@ def run(dataset, model):
         query_embeddings = {key: candidate_embeddings.pop(key) for key in query_ids}
     elif dataset == 'coliee' or dataset == 'muser' or dataset == 'ecthr':
         query_embeddings = candidate_embeddings
-    results = [MAP, k_1, k_5, k_10, k_15, k_20, k_50, k_100, k_500] = calculate_metrics(query_embeddings,
-                                                                                        candidate_embeddings, gold)
-    results = [str(round(result, 2)) for result in results]
+    MAP, f1_final, p_final, r_final = calculate_metrics(query_embeddings, candidate_embeddings, gold)
+    MAP = round(MAP, 2)
+    f1_final = [str(round(f1, 2)) for f1 in f1_final]
+    p_final = [str(round(p, 2)) for p in p_final]
+    r_final = [str(round(r, 2)) for r in r_final]
 
-    if not os.path.exists('results.csv'):
-        with open('results.csv', 'a') as f:
-            f.write("Model,Dataset,MAP,k_1,k_5,k_10,k_15,k_20,k_50,k_100,k_500\n")
-    with open('results.csv', 'a') as f:
-        results_str = ",".join(results)
-        f.write(f'{model},{dataset},{results_str}\n')
+    results_file_name = 'new_results.csv'
+    if not os.path.exists(results_file_name):
+        with open(results_file_name, 'a') as f:
+            f.write("Model,Dataset,Metric,MAP")
+            for number in numbers:
+                f.write(f',k_{number}')
+            f.write('\n')
+    with open(results_file_name, 'a') as f:
+        f1_results = ",".join(f1_final)
+        p_results = ",".join(p_final)
+        r_results = ",".join(r_final)
+        f.write(f'{model},{dataset},F1,{MAP},{f1_results}\n')
+        f.write(f'{model},{dataset},Precision,{MAP},{p_results}\n')
+        f.write(f'{model},{dataset},Recall,{MAP},{r_results}\n')
 
 
 if __name__ == '__main__':
     # parser = argparse.ArgumentParser(
-    #     description='''case vectoriser arguments''')
+    #     description='''evaluator arguments''')
     # parser.add_argument('--model_name', type=str, required=True, help='model_name')
     # parser.add_argument('--dataset', type=str, required=True, help='dataset')
     # args = parser.parse_args()
+    #
+    # run(args.dataset, args.model_name)
 
-    datasets = ['ilpcr', 'coliee', 'irled', 'muser']
+    datasets = ['ilpcr', 'coliee', 'irled', 'muser','ecthr']
     models = ['BAAI/bge-en-icl', 'Salesforce/SFR-Embedding-2_R', 'dunzhang/stella_en_1.5B_v5']
 
     for model in models:

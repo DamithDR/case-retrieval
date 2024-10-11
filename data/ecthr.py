@@ -34,7 +34,8 @@ class ecthr(DataClass):
 
         data = dict()
         for case, citation_list in zip(cases, citations):
-            if len(citation_list) > 0:
-                data[case] = ast.literal_eval(citation_list)
+            citations = ast.literal_eval(citation_list)
+            if len(citations) > 0:
+                data[case] = citations
 
         return data
