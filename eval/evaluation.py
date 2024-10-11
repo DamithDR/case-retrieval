@@ -130,7 +130,7 @@ if __name__ == '__main__':
     # run(args.dataset, args.model_name)
 
     datasets = ['ilpcr', 'coliee', 'irled', 'muser','ecthr']
-    models = ['BAAI/bge-en-icl', 'Salesforce/SFR-Embedding-2_R', 'dunzhang/stella_en_1.5B_v5']
+    models = ['BAAI/bge-en-icl', 'Salesforce/SFR-Embedding-2_R', 'dunzhang/stella_en_1.5B_v5','nlpaueb/legal-bert-base-uncased']
 
     for model in models:
         for dataset in datasets:
