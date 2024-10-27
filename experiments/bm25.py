@@ -1,12 +1,16 @@
+import os
+
 import jieba as jieba
 import nltk
 import numpy as np
 from nltk.tokenize import word_tokenize
 from rank_bm25 import BM25Okapi
 
-from util.metric import recall_at_k, mean_average_precision
+from util.metric import recall_at_k, mean_average_precision, f1_at_k, precision_at_k
 from util.name_handler import get_data_class
 from util.similarity import sort_by_numbers_desc
+
+numbers = [1] + list(range(5, 51, 5)) + [100]
 
 
 def run(dataset):
@@ -60,28 +64,53 @@ def run(dataset):
 
     test = []
     predictions = []
-    recall_at_50_values = []
-    recall_at_100_values = []
-    recall_at_500_values = []
+    f1_values = {}
+    p_values = {}
+    r_values = {}
     for case, citations in gold.items():
         test.append(citations)
         results = results_dict[case]
         values, labels = sort_by_numbers_desc(results['scores'], results['keys'])
         predictions.append(labels)
-        recall_at_50_values.append(recall_at_k(labels, citations, 50))
-        recall_at_100_values.append(recall_at_k(labels, citations, 100))
-        recall_at_500_values.append(recall_at_k(labels, citations, 500))
-    MAP = mean_average_precision(predictions, test)
-    k_50 = np.mean(recall_at_50_values)
-    k_100 = np.mean(recall_at_100_values)
-    k_500 = np.mean(recall_at_500_values)
-    with open('bm25.txt', 'a') as f:
-        f.write(
-            f'Model : BM25 | Dataset : {dataset} | MAP : {MAP} | recall@50 : {k_50} | recall@100 : {k_100} | recall@500 : {k_500} \n')
+        for number in numbers:
+            if number not in f1_values.keys():
+                f1_values[number] = []
+                p_values[number] = []
+                r_values[number] = []
+            f1_values[number].append(f1_at_k(labels, citations, number))
+            p_values[number].append(precision_at_k(labels, citations, number))
+            r_values[number].append(recall_at_k(labels, citations, number))
+    MAP = mean_average_precision(predictions, gold)
+    f1_final = []
+    p_final = []
+    r_final = []
+    for number in numbers:
+        f1_final.append(np.mean(f1_values[number]).item())
+        p_final.append(np.mean(p_values[number]).item())
+        r_final.append(np.mean(r_values[number]).item())
+    return MAP, f1_final, p_final, r_final
 
 
 if __name__ == '__main__':
-    # run('ilpcr')
-    # run('irled')
-    run('coliee')
-    run('muser')
+    datasets = ['irled', 'ilpcr', 'muser', 'coliee', 'ecthr']
+    for dataset in datasets:
+        MAP, f1_final, p_final, r_final = run(dataset)
+        MAP = round(MAP, 2)
+        f1_final = [str(round(f1, 2)) for f1 in f1_final]
+        p_final = [str(round(p, 2)) for p in p_final]
+        r_final = [str(round(r, 2)) for r in r_final]
+
+        results_file_name = 'bm25_results.csv'
+        if not os.path.exists(results_file_name):
+            with open(results_file_name, 'a') as f:
+                f.write("Model,Dataset,Metric,MAP")
+                for number in numbers:
+                    f.write(f',k_{number}')
+                f.write('\n')
+        with open(results_file_name, 'a') as f:
+            f1_results = ",".join(f1_final)
+            p_results = ",".join(p_final)
+            r_results = ",".join(r_final)
+            f.write(f'BM25,{dataset},F1,{MAP},{f1_results}\n')
+            f.write(f'BM25,{dataset},Precision,{MAP},{p_results}\n')
+            f.write(f'BM25,{dataset},Recall,{MAP},{r_results}\n')
