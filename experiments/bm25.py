@@ -72,22 +72,23 @@ def run(dataset):
         results = results_dict[case]
         values, labels = sort_by_numbers_desc(results['scores'], results['keys'])
         predictions.append(labels)
-        for number in numbers:
-            if number not in f1_values.keys():
-                f1_values[number] = []
-                p_values[number] = []
-                r_values[number] = []
-            f1_values[number].append(f1_at_k(labels, citations, number))
-            p_values[number].append(precision_at_k(labels, citations, number))
-            r_values[number].append(recall_at_k(labels, citations, number))
-    MAP = mean_average_precision(predictions, gold)
+        # for number in numbers:
+        #     if number not in f1_values.keys():
+        #         f1_values[number] = []
+        #         p_values[number] = []
+        #         r_values[number] = []
+        #     f1_values[number].append(f1_at_k(labels, citations, number))
+        #     p_values[number].append(precision_at_k(labels, citations, number))
+        #     r_values[number].append(recall_at_k(labels, citations, number))
+    MAP = mean_average_precision(predictions, test)
     f1_final = []
     p_final = []
     r_final = []
-    for number in numbers:
-        f1_final.append(np.mean(f1_values[number]).item())
-        p_final.append(np.mean(p_values[number]).item())
-        r_final.append(np.mean(r_values[number]).item())
+    # for number in numbers:
+        # f1_final.append(np.mean(f1_values[number]).item())
+        # p_final.append(np.mean(p_values[number]).item())
+        # r_final.append(np.mean(r_values[number]).item())
+    print(f'MAP : {MAP}')
     return MAP, f1_final, p_final, r_final
 
 
@@ -100,7 +101,7 @@ if __name__ == '__main__':
         p_final = [str(round(p, 2)) for p in p_final]
         r_final = [str(round(r, 2)) for r in r_final]
 
-        results_file_name = 'bm25_results.csv'
+        results_file_name = 'MAP_results.csv'
         if not os.path.exists(results_file_name):
             with open(results_file_name, 'a') as f:
                 f.write("Model,Dataset,Metric,MAP")

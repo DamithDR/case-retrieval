@@ -13,6 +13,14 @@ def plot():
         print(f"Group: {name}")
         model_name, metric_name = name  # unpack the model and metric names
         if metric_name == 'F1':
+            plt.rcParams.update({
+                'font.size': 14,  # General font size
+                'axes.titlesize': 16,  # Title font size
+                'axes.labelsize': 16,  # X and Y axis label font size
+                'xtick.labelsize': 14,  # X tick label font size
+                'ytick.labelsize': 14,  # Y tick label font size
+                'legend.fontsize': 14  # Legend font size
+            })
             # Melt the DataFrame to make it long-form for plotting
             df_melted = group.melt(id_vars=['Model', 'Dataset', 'Metric', 'MAP'],
                                    value_vars=['k_1', 'k_5', 'k_10', 'k_15', 'k_20', 'k_25', 'k_30', 'k_35', 'k_40', 'k_45',
@@ -32,10 +40,9 @@ def plot():
                 plt.plot(subset['k'], subset['Metric Value'], marker='o', label=dataset)
 
             # Adding labels and title
-            plt.xlabel('k values')
-            plt.ylabel(metric_name)
-            # plt.title(f'{metric_name} vs k for Different Models')
-            plt.legend(title='Model')
+            plt.xlabel('k values', fontsize=16)
+            plt.ylabel('F score', fontsize=16)  # Assuming 'metric_name' is a variable containing the y-axis label
+            plt.legend(title='Model', title_fontsize=14, fontsize=14)
             plt.grid(True)
 
             # Show plot
