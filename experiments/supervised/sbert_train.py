@@ -48,13 +48,12 @@ def run(model_name):
     )
 
     dev_evaluator = BinaryClassificationEvaluator(
-        sentences1=eval_dataset["reference"],
-        sentences2=eval_dataset["candidate"],
-        labels=eval_dataset["label"],
+        sentences1=eval_dataset['train']["reference"],
+        sentences2=eval_dataset['train']["candidate"],
+        labels=eval_dataset['train']["label"],
         name="legal-bert-sbert-ilpcr_dev",
         batch_size=16,
         show_progress_bar=True,
-
     )
     dev_evaluator(model)
 
