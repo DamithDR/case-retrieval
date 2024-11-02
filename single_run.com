@@ -5,7 +5,6 @@
 #SBATCH --time=12:00:00
 #SBATCH --cpus-per-task=4
 #SBATCH --mail-type=END,FAIL
-#SBATCH --mail-user=d.dolamullage@lancaster.ac.uk
 #SBATCH --output=/storage/hpc/41/dolamull/experiments/case-retrieval/output.log
 #SBATCH --error=/storage/hpc/41/dolamull/experiments/case-retrieval/error.log
 
