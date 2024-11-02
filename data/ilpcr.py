@@ -1,5 +1,6 @@
 import random
 
+import pandas as pd
 from datasets import load_dataset
 
 from data.DataClass import DataClass
@@ -52,3 +53,87 @@ class ilpcr(DataClass):
             if len(citation_list) > 0:
                 data[case] = citation_list
         return data
+
+    def get_training_permutations(self):
+        train_candidates = load_dataset(self.name, "pcr", split='train_candidates')
+        candidate_ids = train_candidates['id']
+        train_queries = load_dataset(self.name, "pcr", split='train_queries')
+
+        references = []
+        cases = []
+        label = []
+
+        for id, case, relevant_candidates in zip(train_queries['id'], train_queries['text'],
+                                                 train_queries['relevant_candidates']):
+            text = ' \n'.join(case)
+
+            # positive samples
+            for candidate in relevant_candidates:
+                if candidate != '':
+                    idx = train_candidates['id'].index(candidate)
+                    candidate_case = train_candidates[idx]
+                    candidate_case = ' \n'.join(candidate_case['text'])
+                    references.append(text)
+                    cases.append(candidate_case)
+                    label.append(1)
+
+            # negative samples
+            filtered_list = [elem for elem in candidate_ids if elem not in relevant_candidates]
+
+            # Randomly select 5 elements from the filtered list
+            if len(filtered_list) >= 5:
+                selected_elements = random.sample(filtered_list, 5)
+            else:
+                selected_elements = filtered_list
+
+            for element in selected_elements:
+                idx = train_candidates['id'].index(element)
+                element_text = train_candidates[idx]
+                element_text = ' \n'.join(element_text['text'])
+                references.append(text)
+                cases.append(element_text)
+                label.append(0)
+
+        return pd.DataFrame({'reference': references, 'candidate': cases, 'label': label})
+
+    def get_dev_permutations(self):
+        dev_candidates = load_dataset(self.name, "pcr", split='dev_candidates')
+        candidate_ids = dev_candidates['id']
+        dev_queries = load_dataset(self.name, "pcr", split='dev_queries')
+
+        references = []
+        cases = []
+        label = []
+
+        for id, case, relevant_candidates in zip(dev_queries['id'], dev_queries['text'],
+                                                 dev_queries['relevant_candidates']):
+            text = ' \n'.join(case)
+
+            # positive samples
+            for candidate in relevant_candidates:
+                if candidate != '':
+                    idx = dev_candidates['id'].index(candidate)
+                    candidate_case = dev_candidates[idx]
+                    candidate_case = ' \n'.join(candidate_case['text'])
+                    references.append(text)
+                    cases.append(candidate_case)
+                    label.append(1)
+
+            # negative samples
+            filtered_list = [elem for elem in candidate_ids if elem not in relevant_candidates]
+
+            # Randomly select 5 elements from the filtered list
+            if len(filtered_list) >= 5:
+                selected_elements = random.sample(filtered_list, 5)
+            else:
+                selected_elements = filtered_list
+
+            for element in selected_elements:
+                idx = dev_candidates['id'].index(element)
+                element_text = dev_candidates[idx]
+                element_text = ' \n'.join(element_text['text'])
+                references.append(text)
+                cases.append(element_text)
+                label.append(0)
+
+        return pd.DataFrame({'reference': references, 'candidate': cases, 'label': label})
