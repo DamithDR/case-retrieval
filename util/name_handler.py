@@ -5,6 +5,7 @@ from data.irled import irled
 from data.muser import muser
 from models.flagembed import flag
 from models.legalbert import legalbert
+from models.legalbertfinetuned import legalbertfinetuned
 from models.nvembedv2 import Nvembedv2
 from models.sftembed import sfr
 from models.stellaembed import stella
@@ -47,6 +48,8 @@ def get_model_class(model_name):
         return stella()
     elif model_name == 'nlpaueb/legal-bert-base-uncased':
         return legalbert()
+    elif model_name == 'legalbertfinetuned':
+        return legalbertfinetuned()
 
 
 def standadise_name(name):
