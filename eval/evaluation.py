@@ -62,7 +62,8 @@ def calculate_metrics(query_embeddings, candidate_embeddings, test):
     print(f"eval k values = {numbers}")
 
     for case, citations in test.items():
-        case = case.replace('/', '-')  # for ecthr dataset
+        if isinstance(case, str):
+            case = case.replace('/', '-')  # for ecthr dataset
         citations = [citation.replace('/', '-') for citation in citations]  # for ecthr dataset
         gold.append(citations)
         results = results_dict[case]
