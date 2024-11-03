@@ -13,6 +13,10 @@ class lecardv2(DataClass):
         self.candidates_ids = []
         super().__init__('data/files/lecardv2')
 
+    def load_data(self):
+        self.load_candidates()
+        self.load_queries()
+
     def load_candidates(self):
         for filename in os.listdir(f'{self.name}/candidates/'):
             if filename.endswith('.json'):

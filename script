@@ -7,3 +7,5 @@ python -m preprocess.vectoriser --model_name dunzhang/stella_en_1.5B_v5 --datase
 python -m eval.evaluation --model_name dunzhang/stella_en_1.5B_v5 --dataset IL_PCR
 
 python -m experiments.bm25
+
+python -m preprocess.vectoriser --model_name dunzhang/stella_en_1.5B_v5 --dataset lecardv2
