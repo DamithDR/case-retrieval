@@ -51,7 +51,6 @@ def run(dataset):
 
     results_dict = {}
     for case, citations in gold.items():
-        print(query_ids)
         q_idx = query_ids.index(case)
         query = queries[q_idx]
         if dataset == 'muser' or dataset == 'lecardv2':
