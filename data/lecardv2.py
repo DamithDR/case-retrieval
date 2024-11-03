@@ -27,10 +27,10 @@ class lecardv2(DataClass):
 
         sampling_candidates = set(all_candidates) - set(all_gold_candidates)
         if len(sampling_candidates) > 1000:
-            selected_items = random.sample(sampling_candidates, 1000)
+            selected_items = random.sample(list(sampling_candidates), 1000)
         else:
-            selected_items = sampling_candidates
-        sampled_candidates = selected_items + set(all_gold_candidates)
+            selected_items = list(sampling_candidates)
+        sampled_candidates = selected_items + all_gold_candidates
 
         for filename in sampled_candidates:
             if filename.endswith('.json'):
