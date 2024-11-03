@@ -79,7 +79,7 @@ def f1_at_k(recommended_items, relevant_items, k):
 
 def average_precision(recommended_items, relevant_items):
     """
-    Calculate the Average Precision (AP) for a single query.
+    Calculate the Average Precision (AP) for a single queries.
 
     Args:
         recommended_items (list): List of items recommended by the model.
@@ -108,13 +108,13 @@ def mean_average_precision(recommended_lists, relevant_lists):
     Calculate the Mean Average Precision (MAP) for multiple queries.
 
     Args:
-        recommended_lists (list of lists): List of recommended items for each query.
-        relevant_lists (list of lists): List of relevant (ground-truth) items for each query.
+        recommended_lists (list of lists): List of recommended items for each queries.
+        relevant_lists (list of lists): List of relevant (ground-truth) items for each queries.
 
     Returns:
         float: Mean Average Precision (MAP) score.
     """
-    ap_scores = []  # List to store AP scores for each query
+    ap_scores = []  # List to store AP scores for each queries
 
     for recommended_items, relevant_items in zip(recommended_lists, relevant_lists):
         ap = average_precision(recommended_items, relevant_items)

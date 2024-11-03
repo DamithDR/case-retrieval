@@ -93,7 +93,7 @@ def run(dataset, model):
     gold = data_class.get_gold_data()
     candidate_embeddings = load_embeddings(dataset, model)
     query_embeddings = dict()
-    if dataset == 'ilpcr' or dataset == 'irled':
+    if dataset == 'ilpcr' or dataset == 'irled' or dataset == 'lecardv2':
         query_ids = data_class.get_query_ids()
         query_embeddings = {key: candidate_embeddings.pop(key) for key in query_ids}
     elif dataset == 'coliee' or dataset == 'muser' or dataset == 'ecthr':

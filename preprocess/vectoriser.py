@@ -14,7 +14,7 @@ def save_embeddings(embeddings, ids, model_alias, dataset_alias):
         id = str(id).replace('/', '-')
         np.save(f'{save_path}/{id}.npy', embedding)
 
-    print(f'saving complete : {save_path}/{dataset_alias}/{dataset_alias}.csv')
+    print(f'saving complete : {save_path}/')
 
 
 def vectorise_candidates(model_class, data_class):
@@ -42,7 +42,7 @@ def vectorise_dataset(model_class, data_class):
 
 
 def vectorise(model_class, data_class, dataset):
-    if dataset in ['irled', 'ilpcr']:
+    if dataset in ['irled', 'ilpcr','lecardv2']:
         vectorise_queries(model_class, data_class)
         vectorise_candidates(model_class, data_class)
     elif dataset in ['muser', 'coliee', 'ecthr']:

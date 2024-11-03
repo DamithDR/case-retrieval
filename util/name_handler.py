@@ -2,6 +2,7 @@ from data.coliee import coliee
 from data.ecthr import ecthr
 from data.ilpcr import ilpcr
 from data.irled import irled
+from data.lecardv2 import lecardv2
 from data.muser import muser
 from models.flagembed import flag
 from models.legalbert import legalbert
@@ -22,6 +23,8 @@ def get_data_class(dataset):
         return muser()
     elif dataset == 'ecthr':
         return ecthr()
+    elif dataset == 'lecardv2':
+        return lecardv2()
 
 
 def get_embedding_folder(dataset):
