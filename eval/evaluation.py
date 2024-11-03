@@ -121,18 +121,18 @@ def run(dataset, model):
 
 
 if __name__ == '__main__':
-    # parser = argparse.ArgumentParser(
-    #     description='''evaluator arguments''')
-    # parser.add_argument('--model_name', type=str, required=True, help='model_name')
-    # parser.add_argument('--dataset', type=str, required=True, help='dataset')
-    # args = parser.parse_args()
-    #
-    # run(args.dataset, args.model_name)
+    parser = argparse.ArgumentParser(
+        description='''evaluator arguments''')
+    parser.add_argument('--model_name', type=str, required=True, help='model_name')
+    parser.add_argument('--dataset', type=str, required=True, help='dataset')
+    args = parser.parse_args()
 
-    datasets = ['ilpcr', 'coliee', 'irled', 'muser','ecthr']
-    models = ['legalbertfinetuned']
+    run(args.dataset, args.model_name)
+
+    # datasets = ['ilpcr', 'coliee', 'irled', 'muser','ecthr']
+    # models = ['legalbertfinetuned']
     # models = ['BAAI/bge-en-icl', 'Salesforce/SFR-Embedding-2_R', 'dunzhang/stella_en_1.5B_v5','nlpaueb/legal-bert-base-uncased']
-
-    for model in models:
-        for dataset in datasets:
-            run(dataset, model)
+    #
+    # for model in models:
+    #     for dataset in datasets:
+    #         run(dataset, model)
