@@ -23,7 +23,7 @@ def run(dataset):
     queries = []
     candidate_ids = []
     candidates = []
-    if dataset == 'ilpcr' or dataset == 'irled':
+    if dataset == 'ilpcr' or dataset == 'irled' or dataset == 'lecardv2':
         query_ids = data_class.get_query_ids()
         queries = data_class.get_queries()
         candidate_ids = data_class.get_candidate_ids()
@@ -43,7 +43,7 @@ def run(dataset):
             queries.append(text)
 
     # Tokenize the documents
-    if dataset == 'muser':
+    if dataset == 'muser' or dataset == 'lecardv2':
         tokenized_documents = [list(jieba.cut(doc)) for doc in candidates]
     else:
         tokenized_documents = [word_tokenize(doc.lower()) for doc in candidates]
@@ -53,7 +53,7 @@ def run(dataset):
     for case, citations in gold.items():
         q_idx = query_ids.index(case)
         query = queries[q_idx]
-        if dataset == 'muser':
+        if dataset == 'muser' or dataset == 'lecardv2':
             tokenized_query = list(jieba.cut(query))
         else:
             tokenized_query = word_tokenize(query.lower())
@@ -72,28 +72,29 @@ def run(dataset):
         results = results_dict[case]
         values, labels = sort_by_numbers_desc(results['scores'], results['keys'])
         predictions.append(labels)
-        # for number in numbers:
-        #     if number not in f1_values.keys():
-        #         f1_values[number] = []
-        #         p_values[number] = []
-        #         r_values[number] = []
-        #     f1_values[number].append(f1_at_k(labels, citations, number))
-        #     p_values[number].append(precision_at_k(labels, citations, number))
-        #     r_values[number].append(recall_at_k(labels, citations, number))
+        for number in numbers:
+            if number not in f1_values.keys():
+                f1_values[number] = []
+                p_values[number] = []
+                r_values[number] = []
+            f1_values[number].append(f1_at_k(labels, citations, number))
+            p_values[number].append(precision_at_k(labels, citations, number))
+            r_values[number].append(recall_at_k(labels, citations, number))
     MAP = mean_average_precision(predictions, test)
     f1_final = []
     p_final = []
     r_final = []
-    # for number in numbers:
-        # f1_final.append(np.mean(f1_values[number]).item())
-        # p_final.append(np.mean(p_values[number]).item())
-        # r_final.append(np.mean(r_values[number]).item())
+    for number in numbers:
+        f1_final.append(np.mean(f1_values[number]).item())
+        p_final.append(np.mean(p_values[number]).item())
+        r_final.append(np.mean(r_values[number]).item())
     print(f'MAP : {MAP}')
     return MAP, f1_final, p_final, r_final
 
 
 if __name__ == '__main__':
-    datasets = ['irled', 'ilpcr', 'muser', 'coliee', 'ecthr']
+    # datasets = ['irled', 'ilpcr', 'muser', 'coliee', 'ecthr']
+    datasets = ['lecardv2']
     for dataset in datasets:
         MAP, f1_final, p_final, r_final = run(dataset)
         MAP = round(MAP, 2)
