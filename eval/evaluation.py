@@ -35,7 +35,7 @@ def get_similarity(case, query_embeddings, candidate_embeddings):
     candidate_keys = []
     if isinstance(case, str):
         case = case.replace('/', '-')
-    q_embed = query_embeddings[case]
+    q_embed = query_embeddings[str(case)]
     for key, embedding in candidate_embeddings.items():
         if key != case:
             similarity = cosine_similarity(q_embed, embedding)
