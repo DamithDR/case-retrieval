@@ -33,7 +33,8 @@ def get_embeddings_by_id(df, target_id):
 def get_similarity(case, query_embeddings, candidate_embeddings):
     similarity_scores = []
     candidate_keys = []
-    case = case.replace('/', '-')
+    if isinstance(case, str):
+        case = case.replace('/', '-')
     q_embed = query_embeddings[case]
     for key, embedding in candidate_embeddings.items():
         if key != case:
