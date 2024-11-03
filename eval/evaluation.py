@@ -46,7 +46,7 @@ def get_similarity(case, query_embeddings, candidate_embeddings):
 def calculate_metrics(query_embeddings, candidate_embeddings, test):
     results_dict = {}
     for case, citations in test.items():
-        case = case.replace('/', '-')
+        case = str(case).replace('/', '-')
         keys, similarity = get_similarity(case, query_embeddings, candidate_embeddings)
         results_dict[case] = {'keys': keys, 'similarity': similarity}
 

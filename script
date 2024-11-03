@@ -9,3 +9,7 @@ python -m eval.evaluation --model_name dunzhang/stella_en_1.5B_v5 --dataset IL_P
 python -m experiments.bm25
 
 python -m preprocess.vectoriser --model_name dunzhang/stella_en_1.5B_v5 --dataset lecardv2
+
+python -m preprocess.vectoriser --model_name legalbertfinetuned --dataset lecardv2
+
+python -m eval.evaluation --model_name legalbertfinetuned --dataset lecardv2
