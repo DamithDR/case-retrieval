@@ -69,5 +69,5 @@ class lecardv2(DataClass):
                 relevant = f'{annot[2]}.json'
                 if not data.keys().__contains__(ref):
                     data[int(ref)] = []
-                data[int(ref)].append(int(relevant))
+                data[int(ref)].append(relevant)
         return data
