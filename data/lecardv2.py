@@ -1,5 +1,6 @@
 import json
 import os
+import random
 
 from data.DataClass import DataClass
 
@@ -18,7 +19,20 @@ class lecardv2(DataClass):
         self.load_queries()
 
     def load_candidates(self):
-        for filename in os.listdir(f'{self.name}/candidates/'):
+
+        gold = self.get_gold_data()
+
+        all_gold_candidates = [candidate for lst in gold.values() for candidate in lst]
+        all_candidates = os.listdir(f'{self.name}/candidates/')
+
+        sampling_candidates = set(all_candidates) - set(all_gold_candidates)
+        if len(sampling_candidates) > 1000:
+            selected_items = random.sample(sampling_candidates, 1000)
+        else:
+            selected_items = sampling_candidates
+        sampled_candidates = selected_items + set(all_gold_candidates)
+
+        for filename in sampled_candidates:
             if filename.endswith('.json'):
                 file_path = os.path.join(f'{self.name}/candidates/', filename)
                 with open(file_path, 'r', encoding='utf-8') as file:
@@ -52,7 +66,7 @@ class lecardv2(DataClass):
             for line in file:
                 annot = line.split('\t')
                 ref = annot[0]
-                relevant = annot[2]
+                relevant = f'{annot[2]}.json'
                 if not data.keys().__contains__(ref):
                     data[ref] = []
                 data[ref].append(relevant)
