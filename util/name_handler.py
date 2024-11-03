@@ -38,6 +38,8 @@ def get_embedding_folder(dataset):
         return 'muser_cases_pool.json'
     elif dataset == 'ecthr':
         return 'ECTHR-PCR'
+    elif dataset == 'lecardv2':
+        return 'lecardv2'
 
 
 def get_model_class(model_name):
