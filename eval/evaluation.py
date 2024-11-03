@@ -94,6 +94,8 @@ def run(dataset, model):
     candidate_embeddings = load_embeddings(dataset, model)
 
     print(len(candidate_embeddings))
+
+    print(candidate_embeddings.keys())
     query_embeddings = dict()
     if dataset == 'ilpcr' or dataset == 'irled' or dataset == 'lecardv2':
         query_ids = data_class.get_query_ids()
