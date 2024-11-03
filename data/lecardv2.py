@@ -45,7 +45,8 @@ class lecardv2(DataClass):
         with open('data/files/lecardv2/queries/test_query.json', 'r') as file:
             for line in file:
                 data = json.loads(line.strip())
-                self.query_ids.append(data['id'])
+                number = data['id']
+                self.query_ids.append(f'{number}.json')
                 self.queries.append(data['query'])
 
     def get_candidates(self):
